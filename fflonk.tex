@@ -578,8 +578,7 @@ $D^{(2)}=(D^{(1)})^{(1)}$ and $D^{(3)}=(D^{(2)})^{(1)}$ respectively.
 
   As suggestive notation, we denote elements of these sets by a corresponding number of overhead bars respectively; e.g. $\S\in \vecs,\SS\in \rects$ and $\SSS\in \cubes$.
   
- For a vector $\f\in D^t$, we refer to the elements of \f by $f_i,0\leq i < t$. Similarly for $\ff\in D^{(2)}$, we refer to the elements of \ff, which are vectors over $D$,  by $\f_i, 0\leq i < |\ff|$; and the elements of the \set{\f_i} by \sett{f_{i,j}}{i\in \lt{|\ff|},j\in \lt{|\f_i|}} 
-$\polys\defeq \F[X]$.
+ For a vector $\f\in D^t$, we refer to the elements of \f by $f_i,0\leq i < t$. Similarly for $\ff\in D^{(2)}$, we refer to the elements of \ff, which are vectors over $D$,  by $\f_i, 0\leq i < |\ff|$; and the elements of the \set{\f_i} by \sett{f_{i,j}}{i< |\ff|,j<|\f_i|} $\polys\defeq \F[X]$.
 $\polysofdeg{d}$ - elements of \polys of degree smaller than $d$.
 
 \prg{Operations on polynomials:}
@@ -587,7 +586,7 @@ For $\f\in\polys^t$ and $x\in \F$ we denote by $\f(x)$ the vector in $\F^t$, $\f
 
 For $\f\in\polys^t$ and $\Z\in \F^{\ell}$ we denote by $\f(\Z)\in \rects$ the two dimensional array in $(\F^t)^{\ell}$, $\f(\Z)\defeq   \vecc{\f_i(Z_j)}{j\in \lt{\ell}}$.
 
-For $\ff\in\polys^{(2)}$ and $\ZZ \in \rects$ with $|\ff|=|\ZZ|$,  we denote by $\ff(\ZZ)\in \cubes$ the element  $\ff(\ZZ)\defeq  \vecc{\f_i(\Z_i)}{i\in\lt{|\ff|}}$.
+For $\ff\in\polys^{(2)}$ and $\ZZ \in \rects$ with $|\ff|=|\ZZ|$,  we denote by $\ff(\ZZ)\in \cubes$ the element  $\ff(\ZZ)\defeq  \vecc{\f_i(\Z_i)}{i<|\ff|}$.
 
 
 
