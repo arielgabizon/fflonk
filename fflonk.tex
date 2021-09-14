@@ -512,7 +512,7 @@ We compare the \plonk scheme when using the  \cite{kate}-based PCS in \cite{plon
 	\begin{tabular}{l|l|l|l|l}
 	 & \thead{SRS size} & \thead{prover \\ group operations} & \thead{proof\\ length} & \thead{verifier group operations} \\ \hline
 		\cite{plonk}  &  $3n$ \G1, $2$ \G2  & $11n$ \G1 & $7$ \G1, $7$ \F  &   $16$ \G1, $2$ \textbf{P} \\ \hline
-		this work     &$9n$ \G1, $2$ \G2 &  $35n$ \G1 & $4$ \G1 $15$ \F &   $6$ \G1,  $2$ \textbf{P} \\ \hline
+		this work     &$9n$ \G1, $2$ \G2 &  $35n$ \G1 & $4$ \G1, $15$ \F &   $6$ \G1,  $2$ \textbf{P} \\ \hline
 
 		\end{tabular}
 \end{adjustbox}
@@ -740,7 +740,7 @@ and \verpc outputs \acc if and only if she does so in the execution of \openshpl
 The general case is basically applying the same logic to each evaluation point and commitment. \\
  $\open\left(\t,\cmm,\ZZ,\SSS;\f\right)$:
  \begin{enumerate}
-  \item For $i<r$ \prvpc computes $g_i\defeq \combine{t_i}{\f_i}$. Let $\g\defeq \vecc{g_i}{i<r}$
+  \item For $i<r$, \prvpc computes $g_i\defeq \combine{t_i}{\f_i}$. Let $\g\defeq \vecc{g_i}{i<r}$
   \item \prvpc and \verpc compute $\ZZ'$ where $\Z'_i = \bigcup_{x\in \Z_i}{\roots{t_i}{x}} $, and  $\SS'$ where $\S'_{i}\defeq \bigcup_{j<|\SS_i|} \S_{i,j}(\roots{t_i}{Z_{i,j}})$.
   \item \prvpc and \verpc engage in $\openshplonk(1^r,\cmm,\ZZ',\SS';\g)$ and \verpc outputs \acc if and only if she does so in the execution of \openshplonk.    
   \end{enumerate}
@@ -1003,7 +1003,9 @@ that $\assignment\defeq (\inp,\wit)$ satisfies \constsystem.
 The difference from \cite{plonk} is that we do not wish to use their reduction from ranged polynomial protocols to polynomial protocols, as
 this adds a round of interaction, which ends up adding a verifier scalar multiplication in the compiled protocol against algebraic adversaries.
 Instead, we need to explicitly describe sending the quotient polynomial involved in each of three identities checked.
-We assume below $n$ is a power of two dividing $p-1$, and $H\subset \F$ is a multiplicative subgroup of \F of order $n$ with generator $\hgen$.
+We assume below $n$ is a power of two such that $24n$ divides $p-1$, and $H\subset \F$ is a multiplicative subgroup of \F of order $n$ with generator $\hgen$.
+Note that our divisibility assumption implies \hgen is a $24$'th power in\F.
+
 
 \prg{Preprocessed polynomials:}
 
@@ -1039,7 +1041,6 @@ That is, for $j\in \set{L,R,O},i\in [n]$
  \item \prvpoly computes $Z \in \polysofdeg{n}$, such that 
  $Z(\hgen) =1$; and for $i\in \set{2,\ldots,n}$
  \[Z(\hgen^i)  = \prod_{1\leq \ell <i} f'(\hgen^j)/g'(\hgen^j).\]
- (The case of one of the products being undefined is handled as in the previous protocol.)
  
 \item \prvpoly computes the quotients $T_1,T_2$ showing that $Z$ ``starts from one'' and that $Z$ accumulates the values of $f/g$. Namely,
 \[T_1(X)\defeq (L_1(X) (Z(X)-1))/Z_H(X) =0\]
