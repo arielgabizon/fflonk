@@ -1,0 +1,1156 @@
+% !tex ts-program = pdflatex
+% !tex encoding = utf-8 unicode
+
+% this is a simple template for a latex document using the "article" class.
+% see "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={3.0},
+]{doclicense}
+
+\usepackage{fullpage}
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with xelatex)
+\usepackage[strict]{changepage}
+
+    %%% examples of article customizations
+    % these packages are optional, depending whether you want the features they provide.
+    % see the latex companion or other references for full information.
+
+
+    %%% page dimensions
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (us) or a5paper or....
+    % \geometry{margin=2in} % for example, change the margins to 2 inches all round
+    % \geometry{landscape} % set up the page for landscape
+    %   read geometry.pdf for detailed page layout information
+ \usepackage{numdef}
+\usepackage{unicode-math}
+\usepackage[cal=boondox]{mathalfa}
+\usepackage{graphicx} % support the \includegraphics command and options
+    % some of the article customisations are relevant for this class
+\usepackage{amsmath,amsthm}
+\usepackage{amsfonts} % math fonts such as \mathbb{}
+\usepackage{amssymb} % \therefore
+\usepackage{hyperref}
+\usepackage{cryptocode}
+\usepackage{framed}
+    % \usepackage[parfill]{parskip} % activate to begin paragraphs with an empty line rather than an indent
+
+    %%% packages
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. Enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+    % % these packages are all incorporated in the memoir class to one degree or another...
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{adjustbox}
+
+\usepackage{pgfplots}
+
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+
+    %%% headers & footers
+\usepackage{fancyhdr} % this should be set after setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+
+    %%% section title appearance
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (see the fntguide.pdf for font help)
+    % (this matches context defaults)
+
+    %%% toc (table of contents) appearance
+\usepackage[nottoc,notlof,notlot]{tocbibind} % put the bibliography in the toc
+\usepackage[titles,subfigure]{tocloft} % alter the style of the table of contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % no bold!
+
+    %%% end article customizations
+    \newcommand{\code}[1]{\texttt{#1}}
+\newcommand\tstrut{\rule{0pt}{2.6ex}}         % = `top' strut
+\newcommand\bstrut{\rule[-0.9ex]{0pt}{0pt}}   % = `bottom' strut
+\newcommand{\bgamma}{\boldsymbol{\gamma}}
+\newcommand{\bsigma}{\boldsymbol{\sigma}}
+%%% the "real" document content comes below...
+%\newcommand{\papertitle}{$\mathsf{Maitreya}$: Improved Prover Efficiency in Fully Succinct Universal zk-SNARKs through Permutation Arguments for Multiplicative Subgroups}
+\newcommand{\papertitle}{\fflonk: a Fast-Fourier inspired verifier efficient version of \plonk}
+% On the Verifier Efficiency of KZG style Polynomial Commitment Schemes and PLONK}
+%\newcommand{\authorname}}
+\newcommand{\company}{}
+% \title{ \bf \papertitle \\[0.72cm]}
+% \author{\;\;\;Ariel Gabizon\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;  Zachary J. Williamson \\ \tt{Aztec Network\;\;\;}}
+\title{ \bf \papertitle \\[0.72cm]}
+\author{Ariel Gabizon\qquad  Zachary J. Williamson \\ \tt{Aztec Network\;\;\;}}
+
+% 	\large{\authorname} \\[0.5cm] \large{\company}
+% 	\\ {DRAFT}
+%}
+    %\date{} % activate to display a given date or no date (if empty),
+
+           % otherwise the current date is printed
+
+\ProvidesPackage{numdef}
+
+%% Ariel Macros:
+\num\newcommand{\G1}{\ensuremath{{\mathbb G}_1}\xspace}
+\newcommand{\Gi}{\ensuremath{{\mathbb G}_i}\xspace}
+%\newcommand{\G}{\ensuremath{{\mathbb G}}\xspace}
+\newcommand{\Gstar}{\ensuremath{{\mathbb G}^*}\xspace}
+\newcommand{\x}{\ensuremath{\mathbf{x}}\xspace}
+\newcommand{\z}{\ensuremath{\mathbf{z}}\xspace}
+\newcommand{\X}{\ensuremath{\mathbf{X}}\xspace}
+
+\num\newcommand{\G2}{\ensuremath{{\mathbb G}_2}\xspace}
+%\num\newcommand{\G11}{\ensuremath{\G1\setminus \set{0} }\xspace}
+%\num\newcommand{\G21}{\ensuremath{\G2\setminus \set{0} }\xspace}
+\newcommand{\grouppair}{\ensuremath{G^*}\xspace}
+\newcommand{\prvperm}{\ensuremath{\mathrm{P_{\mathsf{\sigma}}}}\xspace}
+\newcommand{\verperm}{\ensuremath{\mathrm{V_{\mathsf{\sigma}}}}\xspace}
+
+\newcommand{\Gt}{\ensuremath{{\mathbb G}_t}\xspace}
+\newcommand{\F}{\ensuremath{\mathbb F}\xspace}
+\newcommand{\Fstar}{\ensuremath{\mathbb F^*}\xspace}
+
+\newcommand{\help}[1]{$#1$-helper\xspace}
+\newcommand{\randompair}[1]{\ensuremath{\mathsf{randomPair}(#1)}\xspace}
+\newcommand{\pair}[1]{$#1$-pair\xspace}
+\newcommand{\pairs}[1]{$#1$-pairs\xspace}
+
+\newcommand{\pairone}[1]{\G1-$#1$-pair\xspace}
+\newcommand{\pairtwo}[1]{\G2-$#1$-pair\xspace}
+\newcommand{\sameratio}[2]{\ensuremath{\mathsf{SameRatio}(#1,#2)}\xspace}
+\newcommand{\vecc}[2]{\ensuremath{(#1)_{#2}}\xspace}
+\newcommand{\players}{\ensuremath{[n]}\xspace}
+\newcommand{\adv}{\ensuremath{\mathcal A}\xspace}
+\newcommand{\advprime}{\ensuremath{{\mathcal A}'}\xspace}
+\newcommand{\extprime}{\ensuremath{E'}\xspace}
+\newcommand{\advrand}{\ensuremath{\mathsf{rand}_{\adv}}\xspace}
+\num\newcommand{\srs1}{\ensuremath{\mathsf{srs_1}}\xspace}
+\num\newcommand{\srs2}{\ensuremath{\mathsf{srs_2}}\xspace}
+\num\newcommand{\srs0}{\ensuremath{\mathsf{srs}}\xspace}
+\newcommand{\srsi}{\ensuremath{\mathsf{srs_i}}\xspace}
+\newcommand{\com}{\ensuremath{\mathsf{com}}\xspace}
+\newcommand{\comperm}{\ensuremath{\mathsf{com_{\sigma}}}\xspace}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}\xspace}
+\newcommand{\cmm}{\ensuremath{\mathsf{\overline{cm}}}\xspace}
+\newcommand{\cmsig}{\ensuremath{\mathsf{cm_\sigma}}\xspace}
+\newcommand{\open}{\ensuremath{\mathsf{open}}\xspace}
+\newcommand{\openperm}{\ensuremath{\mathsf{open_{\sigma}}}\xspace}
+\newcommand{\sigof}[1]{\ensuremath{\sigma(#1)}\xspace}
+\newcommand{\proverexp}{\ensuremath{\mathsf{e}}\xspace}
+\newcommand{\reducedelems}{\ensuremath{\mathsf{r}}\xspace}
+
+\newcommand{\ci}{\ensuremath{\mathrm{CI}}\xspace}
+\renewcommand{\deg}{\ensuremath{\mathrm{deg}}\xspace}
+\newcommand{\pairvec}[1]{$#1$-vector\xspace}
+\newcommand{\Fq}{\ensuremath{\mathbb{F}_q}\xspace}
+\newcommand{\randpair}[1]{\ensuremath{\mathsf{rp}_{#1}}\xspace}
+\newcommand{\randpairone}[1]{\ensuremath{\mathsf{rp}_{#1}^{1}}\xspace}
+\newcommand{\abase}{\ensuremath{A_{\mathrm{\mathbf{0}}}}\xspace}
+\newcommand{\bbase}{\ensuremath{B_{\mathrm{\mathbf{0}}}}\xspace}
+\newcommand{\cbase}{\ensuremath{C_{\mathrm{\mathbf{0}}}}\xspace}
+
+\newcommand{\amid}{\ensuremath{A_{\mathrm{mid}}}\xspace}
+\newcommand{\bmid}{\ensuremath{B_{\mathrm{mid}}}\xspace}
+\newcommand{\cmid}{\ensuremath{C_{\mathrm{mid}}}\xspace}
+
+\newcommand{\negl}{\ensuremath{\mathsf{negl}(\lambda)}\xspace}
+\newcommand{\randpairtwo}[1]{\ensuremath{\mathsf{rp_{#1}^2}}\xspace}%the randpair in G2
+\newcommand{\nilp}{\ensuremath{\mathscr N}\xspace}
+\newcommand{\groupgen}{\ensuremath{\mathscr G}\xspace}
+\newcommand{\qap}{\ensuremath{\mathscr Q}\xspace}
+\newcommand{\polprot}[6]{$(#1,#2,#3,#4,#5,#6)$-polynomial protocol}
+% \newcommand{\rangedprot}[5]{$#5$-ranged $(#1,#2,#3,#4)$-polynomial protocol}
+
+\newcommand{\rej}{\ensuremath{\mathsf{rej}}\xspace}
+\newcommand{\acc}{\ensuremath{\mathsf{acc}}\xspace}
+\newcommand{\res}{\ensuremath{\mathsf{res}}\xspace}
+\newcommand{\sha}[1]{\ensuremath{\mathsf{COMMIT}(#1)}\xspace}
+ \newcommand{\shaa}{\ensuremath{\mathsf{COMMIT}}\xspace}
+ \newcommand{\comm}[1]{\ensuremath{\mathsf{comm}_{#1}}\xspace}
+ \newcommand{\defeq}{:=}
+
+\newcommand{\B}{\ensuremath{\vec{B}}\xspace}
+\newcommand{\dom}{\ensuremath{H}\xspace}
+\newcommand{\C}{\ensuremath{\vec{C}}\xspace}
+\newcommand{\Btwo}{\ensuremath{\vec{B_2}}\xspace}
+\newcommand{\treevecsimp}{\ensuremath{(\tau,\rho_A,\rho_A \rho_B,\rho_A\alpha_A,\rho_A\rho_B\alpha_B, \rho_A\rho_B\alpha_C,\beta,\beta\gamma)}\xspace}% The sets of elements used in simplifed relation tree in main text body
+\newcommand{\rcptc}{random-coefficient subprotocol\xspace}
+\newcommand{\rcptcparams}[2]{\ensuremath{\mathrm{RCPC}(#1,#2)}\xspace}
+\newcommand{\verifyrcptcparams}[2]{\ensuremath{\mathrm{\mathsf{verify}RCPC}(#1,#2)}\xspace}
+\newcommand{\randadv}{\ensuremath{\mathsf{rand}_{\adv}}\xspace}
+ \num\newcommand{\ex1}[1]{\ensuremath{ #1\cdot g_1}\xspace}
+ \num\newcommand{\ex2}[1]{\ensuremath{#1\cdot g_2}\xspace}
+ \newcommand{\pr}{\mathrm{Pr}}
+ \newcommand{\powervec}[2]{\ensuremath{(1,#1,#1^{2},\ldots,#1^{#2})}\xspace}
+ \newcommand{\partition}{\ensuremath{{\mathcal T}}\xspace}
+ \newcommand{\partof}[1]{\ensuremath{{\partition_{#1}}}\xspace}
+\num\newcommand{\out1}[1]{\ensuremath{\ex1{\powervec{#1}{d}}}\xspace}
+\num\newcommand{\out2}[1]{\ensuremath{\ex2{\powervec{#1}{d}}}\xspace}
+ \newcommand{\nizk}[2]{\ensuremath{\mathrm{NIZK}(#1,#2)}\xspace}% #2 is the hash concatenation input
+ \newcommand{\verifynizk}[3]{\ensuremath{\mathrm{VERIFY\mhyphen NIZK}(#1,#2,#3)}\xspace}
+\newcommand{\protver}{protocol verifier\xspace}
+\newcommand{\mulgroup}{\ensuremath{\F^*}\xspace}
+\newcommand{\lag}[1]{\ensuremath{L_{#1}}\xspace}
+\newcommand{\sett}[2]{\ensuremath{\set{#1}_{#2}}\xspace}
+\newcommand{\setD}[1]{\ensuremath{\set{#1}_{i\in \set{0,\ldots,t-1}}}\xspace}
+\newcommand{\omegaprod}{\ensuremath{\alpha_{\omega}}\xspace}
+\newcommand{\lagvec}[1]{\ensuremath{\mathrm{LAG}_{#1}}\xspace}
+\newcommand{\trapdoor}{\ensuremath{r}}
+\newcommand{\trapdoorext}{\ensuremath{r_{\mathrm{ext}}}\xspace}
+\newcommand{\trapdoorsim}{\ensuremath{r_{\mathrm{sim}}}\xspace}
+\renewcommand{\mod}{\ensuremath{\;\mathrm{mod}\;}}
+\newcommand{\hsub}{\ensuremath{H^*}\xspace}
+\num\newcommand{\enc1}[1]{\ensuremath{\left[#1\right]_1}\xspace}
+\newcommand{\enci}[1]{\ensuremath{\left[#1\right]_i}\xspace}
+\num\newcommand{\enc2}[1]{\ensuremath{\left[#1\right]_2}\xspace}
+\newcommand{\gen}{\ensuremath{\mathsf{gen}}\xspace}
+\newcommand{\prv}{\ensuremath{\mathsf{\mathbf{P}}}\xspace}
+\newcommand{\prvpoly}{\ensuremath{\mathrm{P_{\mathsf{poly}}}}\xspace}
+\newcommand{\prvpc}{\ensuremath{\mathrm{P}}\xspace}%_{\mathsf{PC}}}}\xspace}
+\newcommand{\verpoly}{\ensuremath{\mathrm{V_{\mathsf{poly}}}}\xspace}
+\newcommand{\verpc}{\ensuremath{\mathrm{V}}\xspace}%{\mathsf{PC}}}}\xspace}
+\newcommand{\ideal}{\ensuremath{\mathcal{I}}\xspace}
+\newcommand{\prf}{\ensuremath{\pi}\xspace}
+\newcommand{\simprv}{\ensuremath{\mathrm{P^{sim}}}\xspace}
+
+%\newcommand{\enc}[1]{\ensuremath{\left[#1\right]}\xspace}
+%\num\newcommand{\G0}{\ensuremath{\mathbf{G}}\xspace}
+\newcommand{\GG}{\ensuremath{\mathbf{G^*}}\xspace}  % would have liked to call this G01 but problem with name
+\num\newcommand{\g0}{\ensuremath{\mathbf{g}}\xspace}
+\newcommand{\inst}{\ensuremath{\phi}\xspace}
+\newcommand{\inp}{\ensuremath{\mathsf{x}}\xspace}
+\newcommand{\wit}{\ensuremath{\omega}\xspace}
+\newcommand{\ver}{\ensuremath{\mathsf{\mathbf{V}}}\xspace}
+\newcommand{\per}{\ensuremath{\mathsf{\mathbf{P}}}\xspace}
+\newcommand{\sonic}{\ensuremath{\mathsf{Sonic}}\xspace}
+\newcommand{\aurora}{\ensuremath{\mathsf{Aurora}}\xspace}
+\newcommand{\auroralight}{\ensuremath{\mathsf{Auroralight}}\xspace}
+\newcommand{\groth}{\ensuremath{\mathsf{Groth'16}}\xspace}
+\newcommand{\kate}{\ensuremath{\mathsf{KZG}}\xspace}
+\newcommand{\rel}{\ensuremath{\mathcal{R}}\xspace}
+\newcommand{\ext}{\ensuremath{E}\xspace}
+\newcommand{\shplonk}{\ensuremath{\mathfrak{sh}\mathfrak{p}\mathfrak{lon}\mathfrak{K}}\xspace}
+
+\newcommand{\extshplonk}{\ensuremath{E_{\shplonk}}\xspace}
+\newcommand{\vershplonk}{\ensuremath{V_{\shplonk}}\xspace}
+\newcommand{\params}{\ensuremath{\mathsf{params}_{\inst}}\xspace}
+\newcommand{\protparams}{\ensuremath{\mathsf{params}_{\inst}^\advv}\xspace}
+\num\newcommand{\p1}{\ensuremath{P_1}\xspace}
+\newcommand{\advv}{\ensuremath{ {\mathcal A}^{\mathbf{*}}}\xspace} % the adversary that uses protocol adversary as black box
+\newcommand{\crs}{\ensuremath{\sigma}\xspace}
+%\num\newcommand{\crs1}{\ensuremath{\mathrm{\sigma}_1}\xspace}
+%\num\newcommand{\crs2}{\ensuremath{\mathrm{\sigma}_2}\xspace}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}\xspace}
+\newcommand{\hgen}{\ensuremath{\mathbf{g}}\xspace}
+\renewcommand{\sim}{\ensuremath{\mathsf{sim}}\xspace}%the distribution of messages when \advv simulates message of \p1
+\newcommand{\real}{\ensuremath{\mathsf{real}}\xspace}%the distribution of messages when \p1 is honest and \adv controls rest of players
+ \newcommand{\koevec}[2]{\ensuremath{(1,#1,\ldots,#1^{#2},\alpha,\alpha #1,\ldots,\alpha #1^{#2})}\xspace}
+\newcommand{\mida}{\ensuremath{A_{\mathrm{mid}}}\xspace}
+\newcommand{\midb}{\ensuremath{B_{\mathrm{mid}}}\xspace}
+\newcommand{\midc}{\ensuremath{C_{\mathrm{mid}}}\xspace}
+\newcommand{\chal}{\ensuremath{\mathsf{challenge}}\xspace}
+\newcommand{\attackparams}{\ensuremath{\mathsf{params^{pin}}}\xspace}
+\newcommand{\pk}{\ensuremath{\mathsf{pk}}\xspace}
+\newcommand{\attackdist}[2]{\ensuremath{AD_{#1}}\xspace}
+\renewcommand{\neg}{\ensuremath{\mathsf{negl}(\lambda)}\xspace}
+\newcommand{\ro}{\ensuremath{{\mathcal R}}\xspace}
+\newcommand{\elements}[1]{\ensuremath{\mathsf{elements}_{#1}}\xspace}
+ \num\newcommand{\elmpowers1}[1]{\ensuremath{\mathrm{\mathsf{e}}^1_{#1}}\xspace}
+ \num\newcommand{\elmpowers2}[1]{\ensuremath{\mathrm{\mathsf{e}}^2_{#1}}\xspace}
+\newcommand{\elempowrs}[1]{\ensuremath{\mathsf{e}_{#1}}\xspace}
+ \newcommand{\secrets}{\ensuremath{\mathsf{secrets}}\xspace}
+ \newcommand{\polysofdeg}[1]{\ensuremath{\F_{< #1}[X]}\xspace}
+ \newcommand{\polyvecs}[2]{\ensuremath{(\F_{< #1}[X])^{#2}}\xspace}
+ \newcommand{\polyvecss}{{\ensuremath{(\F[X])^{(1)}}}\xspace}
+ \newcommand{\vecpolys}{\ensuremath{V_d}\xspace}
+ \newcommand{\vecpolysfixed}[1]{\ensuremath{V_{d,#1}}\xspace}
+ \newcommand{\lengthof}[1]{\ensuremath{l(#1)}\xspace}
+ \newcommand{\bivar}[1]{\ensuremath{\F_{< #1}[X,Y]}\xspace}
+ \newcommand{\sig}{\ensuremath{\mathscr{S}}\xspace}
+ \newcommand{\prot}{\ensuremath{\mathscr{P}}\xspace}
+ \newcommand{\PCscheme}{\ensuremath{\mathscr{S}}\xspace}
+ \newcommand{\protprime}{\ensuremath{\mathscr{P^*}}\xspace}
+ \newcommand{\sigprv}{\ensuremath{\mathsf{P_{sc}}}\xspace}
+ \newcommand{\sigver}{\ensuremath{\mathsf{V_{sc}}}\xspace}
+ \newcommand{\sigpoly}{\ensuremath{\mathsf{S_{\sigma}}}\xspace}
+ \newcommand{\idpoly}{\ensuremath{\mathsf{S_{ID}}}\xspace}
+\newcommand{\idpolyevala}{\ensuremath{\mathsf{\bar{s}_{ID1}}}\xspace}
+\newcommand{\sigpolyevala}{\ensuremath{\mathsf{\bar{s}_{\sigma1}}}\xspace}
+\newcommand{\sigpolyevalb}{\ensuremath{\mathsf{\bar{s}_{\sigma2}}}\xspace}
+\newcommand{\bctv}{\ensuremath{\mathsf{BCTV}}\xspace}
+\newcommand{\PI}{\ensuremath{\mathsf{PI}}\xspace}
+\newcommand{\PIb}{\ensuremath{\mathsf{PI_B}}\xspace}
+\newcommand{\PIc}{\ensuremath{\mathsf{PI_C}}\xspace}
+\newcommand{\dl}[1]{\ensuremath{\widehat{#1}}\xspace}
+\newcommand{\obgen}{\ensuremath{\mathcal O}\xspace}
+\newcommand{\PC}{\ensuremath{\mathscr{P}}\xspace}
+\newcommand{\permscheme}{\ensuremath{\sigma_\mathscr{P}}\xspace}
+
+
+\newcommand{\selleft}{\ensuremath{\mathbf{q_L}}\xspace}
+\newcommand{\selright}{\ensuremath{\mathbf{q_R}}\xspace}
+\newcommand{\selout}{\ensuremath{\mathbf{q_O}}\xspace}
+\newcommand{\selmult}{\ensuremath{\mathbf{q_M}}\xspace}
+\newcommand{\selconst}{\ensuremath{\mathbf{q_C}}\xspace}
+\newcommand{\selectors}{\ensuremath{\mathcal{Q}}\xspace}
+\newcommand{\lvar}{\ensuremath{\mathbf{a}}\xspace}
+\newcommand{\vars}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\rvar}{\ensuremath{\mathbf{b}}\xspace}
+\newcommand{\ovar}{\ensuremath{\mathbf{c}}\xspace}
+\newcommand{\pubvars}{\ensuremath{\mathcal{I}}\xspace}
+\newcommand{\assignment}{\ensuremath{\mathbf{x}}\xspace}
+\newcommand{\constsystem}{\ensuremath{\mathscr{C}}\xspace}
+\newcommand{\relof}[1]{\ensuremath{\rel_{#1}}\xspace}
+\newcommand{\pubinppoly}{\ensuremath{\mathsf{PI}}\xspace}
+\newcommand{\ZeroH}{\ensuremath{Z_{H}} \xspace}
+\newcommand{\lpoly}{\ensuremath{\mathsf{a}}\xspace}
+\newcommand{\rpoly}{\ensuremath{\mathsf{b}}\xspace}
+\newcommand{\opoly}{\ensuremath{\mathsf{c}}\xspace}
+\newcommand{\idpermpoly}{\ensuremath{\mathsf{z}}\xspace}
+\newcommand{\lagrangepoly}{\ensuremath{\mathsf{L}}\xspace}
+\newcommand{\zeropoly}{\ensuremath{\mathsf{\ZeroH}}\xspace}
+\newcommand{\selmultpoly}{\ensuremath{\mathsf{q_M}}\xspace}
+\newcommand{\selleftpoly}{\ensuremath{\mathsf{q_L}}\xspace}
+\newcommand{\selrightpoly}{\ensuremath{\mathsf{q_R}}\xspace}
+\newcommand{\seloutpoly}{\ensuremath{\mathsf{q_O}}\xspace}
+\newcommand{\selconstpoly}{\ensuremath{\mathsf{q_C}}\xspace}
+\newcommand{\idcomm}{\ensuremath{[s_{\mathsf{ID1}}]_1}\xspace}
+\newcommand{\sigcomma}{\ensuremath{[s_{\mathsf{\sigma1}}]_1}\xspace}
+\newcommand{\sigcommb}{\ensuremath{[s_{\mathsf{\sigma2}}]_1}\xspace}
+\newcommand{\sigcommc}{\ensuremath{[s_{\mathsf{\sigma3}}]_1}\xspace}
+\newcommand{\selleftcomm}{\ensuremath{[q_\mathsf{L}]_1}\xspace}
+\newcommand{\selrightcomm}{\ensuremath{[q_\mathsf{R}]_1}\xspace}
+\newcommand{\seloutcomm}{\ensuremath{[q_\mathsf{O}]_1}\xspace}
+\newcommand{\selconstcomm}{\ensuremath{[q_\mathsf{C}]_1}\xspace}
+\newcommand{\selmultcomm}{\ensuremath{[q_\mathsf{M}]_1}\xspace}
+
+\newcommand{\multlinecomment}[1]{\directlua{-- #1}}
+
+
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{thm}[lemma]{Theorem}
+\newtheorem{dfn}[lemma]{Definition}
+\newtheorem{remark}[lemma]{Remark}
+
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{corollary}[lemma]{Corollary}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\crct}{\ensuremath{\mathsf{C}}\xspace}
+\newcommand{\A}{\mathcal{A}}
+%\newcommand{\G}{\mathcal{G}}
+\newcommand{\Gr}{\mathbb{G}}
+\newcommand{\cgen}{\text{cgen}}
+\newcommand{\poly}{\ensuremath{\mathsf{poly(\lambda)}}\xspace}
+\newcommand{\snark}{\ensuremath{\mathsf{snark(\lambda)}}\xspace}
+\newcommand{\grandprod}{\mathsf{prod}}
+\newcommand{\perm}{\mathsf{perm}}
+%\newcommand{\open}{\mathsf{open}}
+\newcommand{\update}{\mathsf{update}}
+\newcommand{\Prove}{\mathcal{P}}
+\newcommand{\Verify}{\mathcal{V}}
+\newcommand{\Extract}{\mathcal{E}}
+\newcommand{\Simulate}{\mathcal{S}}
+\newcommand{\Unique}{\mathcal{U}}
+\newcommand{\Rpoly}{\R{\poly}}
+\newcommand{\Ppoly}{\Prove{\poly}}
+\newcommand{\Vpoly}{\Verify{\poly}}
+\newcommand{\Psnark}{\Prove{\snark}}
+\newcommand{\Vsnark}{\Verify{\snark}}
+\newcommand{\Rprod}{\R{\grandprod}}
+\newcommand{\Pprod}{\Prove{\grandprod}}
+\newcommand{\Vprod}{\Verify{\grandprod}}
+\newcommand{\Rperm}{\R{\perm}}
+\newcommand{\Pperm}{\Prove{\perm}}
+\newcommand{\Vperm}{\Verify{\perm}}
+% \newcommand{\zw}[1]{{\textcolor{magenta}{Zac:#1}}}
+% \newcommand{\ag}[1]{{\textcolor{blue}{\emph{Ariel:#1}}}}
+\newcommand{\prob}{\ensuremath{\mathrm{Pr}}\xspace}
+\newcommand{\extprot}{\ensuremath{E_{\prot}}\xspace}
+\newcommand{\extpc}{\ensuremath{E_{\PCscheme}}\xspace}
+\newcommand{\advpc}{\ensuremath{\mathcal A_{\PCscheme}}\xspace}
+\newcommand{\advprot}{\ensuremath{\mathcal A_{\prot}}\xspace}
+\newcommand{\protmany}{\ensuremath{ {\prot}_k}\xspace}
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}\xspace}
+\newcommand{\fflonk}{\ensuremath{\mathcal{ff} \mathfrak{lon}\mathcal{K}}\xspace}
+% \newcommand{\shplonk}{\ensuremath{\mathtt{SHPLONK}}\xspace}
+\newcommand{\marlin}{\ensuremath{\mathsf{Marlin}}\xspace}
+\newcommand{\fractal}{\ensuremath{\mathsf{Fractal}}\xspace}
+\newcommand{\Rsnark}{\R{\snark}}
+\newcommand{\polys}{\ensuremath{\mathbb{F}[X]}\xspace}
+\newcommand{\openset}{\ensuremath{\mathbf{S}}\xspace}
+\newcommand{\lt}[1]{\ensuremath{ [ {\scriptscriptstyle <} #1]}\xspace}
+\newcommand{\combine}[2]{\ensuremath{\mathsf{combine}_{#1}(#2)}\xspace}
+\newcommand{\eval}[2]{\ensuremath{#1(#2)}\xspace}%\mathsf{eval}(#1,#2)}\xspace}
+\newcommand{\decompose}[2]{\ensuremath{\mathsf{decompose}_{#1}(#2)}\xspace}
+\newcommand{\roots}[2]{\ensuremath{\mathsf{roots}_{#1}(#2)}\xspace}
+\newcommand{\f}{\ensuremath{\bar{f}}\xspace}
+\renewcommand{\t}{\ensuremath{\bar{t}}\xspace}
+\newcommand{\ff}{\ensuremath{\bar{\bar{f}}}\xspace}
+\renewcommand{\g}{\ensuremath{\bar{g}}\xspace}
+\renewcommand{\gg}{\ensuremath{\bar{\bar{g}}}\xspace}
+\renewcommand{\S}{\ensuremath{\bar{S}}\xspace}
+\renewcommand{\Z}{\ensuremath{\bar{Z}}\xspace}
+\newcommand{\ZZ}{\ensuremath{\bar{\bar{Z}}}\xspace}
+\renewcommand{\SS}{\ensuremath{\bar{\bar{S}}}\xspace}
+\newcommand{\SSS}{\ensuremath{\bar{\bar{\bar{S}}}}\xspace}
+\newcommand{\vecs}{{\ensuremath{\F^{(1)}}}\xspace}
+\newcommand{\rects}{\ensuremath{\F^{(2)}}\xspace}
+\newcommand{\opensetrects}{\ensuremath{\openset^{(2)}}\xspace}
+\newcommand{\opensetvecs}{\ensuremath{\openset^{(1)}}\xspace}
+\newcommand{\cubes}{\ensuremath{\F^{(3)}}\xspace}
+% \newcommand{\paratemp}[1]{ \paragraph{\textbf{#1}}}
+\newcommand{\prg}[1]{ \paragraph{\textbf{#1}}}
+\newcommand{\sumi}[1]{\sum_{i<#1}}
+\newcommand{\sumj}[1]{\sum_{j<#1}}
+\newcommand{\openshplonk}{\ensuremath{\mathsf{open_{\shplonk}}}\xspace}
+ \newcommand{\PCschemeshplonk}{\ensuremath{\mathscr{S_{\shplonk}}}\xspace}
+\newcommand{\genshplonk}{\ensuremath{\mathsf{gen_{\shplonk}}}\xspace}
+\newcommand{\comshplonk}{\ensuremath{\mathsf{com_{\shplonk}}}\xspace}
+\newcommand{\sumdeg}{\ensuremath{\mathfrak{d}}\xspace}
+\begin{document}
+    \maketitle
+
+\begin{abstract}
+We present a variant of the Kate, Zaverucha and Goldberg polynomial commitment scheme \cite{kate} where $d$ polynomials can be opened at a point that is a $d$'th power, such that the amount of verifier group operations does not depend on $d$.
+Our method works by reducing opening multiple polynomials at a single point $x$, to opening a single polynomial at many points via an ``FFT-like identity''.
+
+As an application we present a version of the \plonk zk-SNARK\cite{plonk} with significantly improved verifier performance, at the cost of roughly tripling the prover time. Specifically, in addition to the two pairings, the verifier only performs six scalar muliptlications, rather than 16 or 18 as in the versions presented in \cite{plonk}.
+\end{abstract}
+
+\section{Introduction}
+
+Polynomial commitment schemes (PCS)\cite{kate} have become a central ingredient in recent constructions of succinct arguments(SNARKs) \cite{sonic,auroralight, marlin,plonk,supersonic} when one desires a ``universal and updatable'' setup procedure \cite{firstUniversal}.
+They ``force'' a prover to answer verifier queries according to a fixed polynomial of bounded degree.
+
+In blockchains such as Ethereum, the precise cost of verifiying a zk-SNARK is of crucial importance to applications such as ``zk-rollups''\cite{rollups}. In these recent constructions this cost mostly reduces to the verification cost of the \open procedure of the PCS. 
+In this procedure we verify the correctness of evaluations given to the verifier, of polynomials previously committed by the prover.
+In this work we give a novel method to reduce verifier cost when opening many commitments in a \cite{kate}-style PCS. 
+% \footnote{In fact, with the help of \cite{haloinfinite}, the same reduction should work for any homomorphic polynomial commitment scheme!}
+
+\subsection{Overiew  of method and comparison to previous techniques:}
+The original scheme of \cite{kate} requires two pairings to open a polynomial $f$ at a point $x\in \F$.
+If we wish to open several polynomials $f_0,\ldots,f_{t-1}$ at $x$ - using \cite{kate} directly would require $2t$ verifier pairings. 
+The common way to improve on this, used in \cite{sonic,marlin,plonk}, has been to choose a random $\gamma \in \F$,
+and instead only verify the value of $f(x)\defeq \sum^{t-1}_{i=0} \gamma^i f_i(x)$.
+
+What verifier efficiency does this result in?
+The verifier only does two pairings as when opening a single polynomial. However, she must create the commitment for $f$ out of the commitments of the \set{f_i}, which requires $t-1$ scalar multiplications to multiply the commitments by the scalars \setD{\gamma^i}.
+Can we get rid of this dependence on $t$ in the verifier performance?
+
+The work of Boneh, Drake, Fisch and Gabizon \cite{shplonk} suggests a route:
+They give an opening protocol for multiple points where the number of verifier group operations only depends on the number of polynomials but not the number of points (there is still a dependency in the number of verifier field operations, but these are ~3 orders of magnitude cheaper than a scalar multiplication).
+Thus, if we could reduce opening many polynomials at a single point to \textit{opening a single polynomial at mulitiple points} we could then use \cite{shplonk} to obtain our desired result.
+
+\prg{An illustration}
+Suppose for a moment we only have two polynomials $f_0,f_1$ to open at $x$.
+A straightforward attempt to avoid the scalar multiplication would be to only open $f_0+f_1$ at $x$.
+Let $a\defeq f_0(x)$ and $b\defeq f_1(x)$. This would prove that the sum of values $(f_0+f_1)(x) = c=a+b$ is correct.
+However, it doesn't constrain $a,b$ individually: For  any value $a'\in \F$ we could choose $b'$ such that $a'+b'=c$,
+and the verifier would also accept $(a',b')$. We thus need a way to generate another linear constraint on $(a,b)$ \textit{without resorting to using two polynomials}.
+
+The well-known ``FFT equation'' comes to our aid.
+In the FFT setting,  we represent a polynomial $f$  by two polynomials $f_0,f_1$ of half the degree derived from its even and odd powers:
+\[f(X) = f_0(X^2)+X\cdot f_1(X^2).\]
+Here, we use this equation in the reverse direction - starting from $f_0,f_1$ and deriving $f$.
+Suppose $x=z^2$ is a square. $f$ will allow us to derive the desired second constraint on $a,b$. Specifically, we open $f$ at \set{z,-z}. We have
+\[b_0=f(z)=f_0(x)+z f_1(x) = a+zb\]
+\[b_1=f(-z)=f_1(x)-z f_1(x) = a-zb\]
+Thus, these two openings of $f$ have given us the desired two independent constraints on $a,b$ and we can determine them.
+Using the natural extension to $t$'th roots of unity gives us the same thing for $t$ polynomials.
+\subsection{Our results:}
+
+We compare the performance of our PCS to a more straightforward batched version of the \cite{kate} scheme as in \cite{plonk}.
+For simplicity, we look at the case where we want to open $t$ polynomials of degree smaller than $n$ at a single point $x\in \F$ that is a $t$'th power, for $t|(|\F|-1)$. The table clearly shows the tradeoff - while the verifier group operations for opening do not depend anymore on $t$, the prover's do - as opposed to more standard batching where the prover's group exponentations\footnote{Following (perhaps faulty) conventions, we interchangeably use the notions group exponetiation and scalar multiplication.} only depend on the maximal degree amongst the polynomials.
+See Theorem \ref{thm:newPCS} for the more detailed efficiency properties in the general case (where each polynomial is opened at an arbitrary subset of points).
+\begin{table}[!htbp]
+	\caption{Comparison of opening $t$ polynomials of degree smaller than $n$, at a  point $x\in \F$ of the form $x=z^t$ for some $z\in \F$. In prover/verifier work columns \Gi means scalar multiplication in \Gi, \F means addition or multiplication in \F, and \textbf{P} means pairing. }
+	\centering
+\begin{adjustbox}{width=1\textwidth}
+	\begin{tabular}{l|l|l|l|l}
+	& \thead{SRS size} & \thead{prover work} & \thead{proof\\ length} & \thead{verifier group operations} \\ \hline
+		\kate 
+		         & $n$ \G1, $2$ \G2  & $t n$ \G1, $O(t n)$ \F&   $t$ \G1 &   $2t$ \textbf{P}\\ \hline
+		Batched \kate as in \cite{sonic,marlin,plonk}     & $n$ \G1, $2$ \G2 &   $n$ \G1,$O(t n)$ \F  & $1$ \G1 & $t-1$ \G1, $2$ \textbf{P}   \\ \hline
+	This work     & $t n$ \G1, $2$ \G2 &   $2tn$ \G1, $O(t n)$ \F& 2 \G1 &  $4$ \G1, $2$ \textbf{P}   \\ \hline
+
+	\end{tabular}
+\end{adjustbox}
+\label{table:prover-work}
+\end{table}
+
+
+
+\prg{Application to \plonk:}
+
+
+The \plonk proving system \cite{plonk}  allows generating proofs of knowledge for assignments
+to fan-in two arithmetic circuits with a universal and updatable SRS (see the paragraph on this topic in Section \ref{sec:terminology}).  Plugging in our PCS into \plonk allows saving in verifier work at the expense of increased prover computation.
+We compare the \plonk scheme when using the  \cite{kate}-based PCS in \cite{plonk} and the PCS of this paper in Table \ref{table:plonk}. 
+
+\begin{table}[!htbp]
+	\caption{Comparison of \plonk efficiency for fan-in two circuit with $n$  gates.}
+	\centering
+\begin{adjustbox}{width=1\textwidth}
+	\begin{tabular}{l|l|l|l|l}
+	 & \thead{SRS size} & \thead{prover \\ group operations} & \thead{proof\\ length} & \thead{verifier group operations} \\ \hline
+		\cite{plonk}  &  $3n$ \G1, $2$ \G2  & $11n$ \G1 & $7$ \G1, $7$ \F  &   $16$ \G1, $2$ \textbf{P} \\ \hline
+		this work     &$9n$ \G1, $2$ \G2 &  $35n$ \G1 & $4$ \G1 $15$ \F &   $6$ \G1,  $2$ \textbf{P} \\ \hline
+
+		\end{tabular}
+\end{adjustbox}
+\label{table:plonk}
+\end{table}
+
+\subsection*{When is it worth it?}
+The zk-rollup setting motivates verifier-prover tradeoffs such as in this paper.
+We typically have ``client proofs'' computed by weak machines. These proofs are not posted on the blockchain, but usually only recursively verified by another SNARK.
+Thus, for these it makes sense to optimize prover efficiency at the expense of the verifier. On the other hand, the final proof put on chain is typically computed by a powerful machine, and is expensive to verify - since all network nodes must do so. For such proofs, it could be a good tradeoff to use the scheme of this paper.
+\section{Preliminaries}
+
+
+\subsection{Terminology and conventions}\label{sec:terminology}
+We assume our field \F is of prime order.
+We denote by \polysofdeg{d} the set of univariate polynomials over \F of degree smaller than d.
+In expressions involving both polynomials and constants, we will write $f(X)$ instead of $f$ for
+to distinguish the two; but in contexts where it is clear $f$ is a polynomial, we will simply write $f$ for brevity.
+
+We assume all algorithms described receive as an implicit parameter the security parameter $\lambda$.
+
+Whenever we use the term “efficient”, we mean an algorithm running in time \poly. Furthermore,
+we assume an “object generator” \obgen that is run with input $\lambda$ before all protocols, and returns all fields and groups used. Specifically, in our protocol $\obgen(\lambda) = (\F, \G1, \G2, \Gt, e, g_1, g_2,g_t)$ where
+\begin{itemize}
+\item \F is a prime field of super-polynomial size $r = \lambda^{\omega(1)}$
+.
+\item $\G1,\G2,\Gt$ are all groups of size $r$, and $e$ is an efficiently computable non-degenerate pairing
+$e : \G1 \times \G2 \to \Gt$.
+\item $g_1,g_2$ are uniformly chosen generators such that $e(g_1, g_2) = g_t$.
+\end{itemize}
+We usually let the $\lambda$ parameter be implicit, i.e.\ write \F instead of $\F(\lambda)$.
+We write \G1 and \G2 additively. We use the notations $\enc1{x}\defeq x\cdot g_1$ and $\enc2{x}\defeq x\cdot g_2$.
+
+We often denote by $[n]$ the integers \set{1,\ldots,n}.
+% For example, when we refer below to the field $\F$, it is in fact a function $\F(\lambda)$ of $\lambda$, and part of
+% the output of $\obgen(\lambda)$.
+We use the acronym e.w.p for ``except with probability''; i.e. e.w.p $\gamma$ means with probability \emph{at least} $1-\gamma$.
+
+\prg{Universal SRS-based public-coin protocols}
+We describe public-coin (meaning the verifier messages are uniformly chosen) interactive protocols between a prover and verifier; when deriving results for non-interactive protocols, we implicitly assume we can get a proof length equal to the total communication of the prover, using the Fiat-Shamir transform/a random oracle. Using this reduction between interactive and non-interactive protocols, we can refer to the ``proof length'' of an interactive protocol.
+
+We allow our protocols to have access to a structured reference string (SRS) that can be derived in deterministic \poly-time from an ``SRS of monomials'' of the form
+\sett{\enc1{x^i}}{a\leq i \leq b}, \sett{\enc2{x^i}}{c\leq i \leq d}, for uniform $x\in \F$,
+and some integers $a,b,c,d$ with absolute value bounded by \poly.
+It then follows from Bowe et al. \cite{SecondMPC} that the required SRS can be derived in a universal and updatable setup\cite{firstUniversal} requiring only one honest participant; in the sense that an adversary controlling all but one of the participants in the setup does not gain more than a \negl advantage in its probability of producing a proof of any statement.
+
+For notational simplicity, we sometimes use the SRS \srs0 as an implicit parameter in protocols, and do not explicitly write it.
+
+
+\section{Notation, definitions and operations on vectors and polynomials}
+
+Formally describing this paper's scheme in general form requires addressing opening multiple commitments, each committing to multiple polynomials, each opened at multiple points.
+To avoid this leading to very cumbersome notation and a ``nightmare of indices'', we define some operations on vectors and polynomials that enable more concise writing.
+
+
+For positive integer $t$ we denote by \lt{t} the integers \set{0,\ldots,t-1}.
+We use the convention for running indicies that the notation $i<t$ e.g. 
+in $\sumi{t}$ means the sum is over $i\in \lt{t}$.
+
+\prg{Vector notation:}
+Let $D$ be some domain. We denote the set of vectors over $D$ by $D^{(1)}$, and similarly, the set of vectors of vectors, and vectors of vectors of vectors by
+$D^{(2)}=(D^{(1)})^{(1)}$ and $D^{(3)}=(D^{(2)})^{(1)}$ respectively.
+
+  As suggestive notation, we denote elements of these sets by a corresponding number of overhead bars respectively; e.g. $\S\in \vecs,\SS\in \rects$ and $\SSS\in \cubes$.
+  
+ For a vector $\f\in D^t$, we refer to the elements of \f by $f_i,0\leq i < t$. Similarly for $\ff\in D^{(2)}$, we refer to the elements of \ff, which are vectors over $D$,  by $\f_i, 0\leq i < |\ff|$; and the elements of the \set{\f_i} by \sett{f_{i,j}}{i\in \lt{|\ff|},j\in \lt{|\f_i|}} 
+$\polys\defeq \F[X]$.
+$\polysofdeg{d}$ - elements of \polys of degree smaller than $d$.
+
+\prg{Operations on polynomials:}
+For $\f\in\polys^t$ and $x\in \F$ we denote by $\f(x)$ the vector in $\F^t$, $\f(x)\defeq (f_0(x),\ldots,f_{t-1}(x))$.
+
+For $\f\in\polys^t$ and $\Z\in \F^{\ell}$ we denote by $\f(\Z)\in \rects$ the two dimensional array in $(\F^t)^{\ell}$, $\f(\Z)\defeq   \vecc{\f_i(Z_j)}{j\in \lt{\ell}}$.
+
+For $\ff\in\polys^{(2)}$ and $\ZZ \in \rects$ with $|\ff|=|\ZZ|$,  we denote by $\ff(\ZZ)\in \cubes$ the element  $\ff(\ZZ)\defeq  \vecc{\f_i(\Z_i)}{i\in\lt{|\ff|}}$.
+
+
+
+\section{Polynomial commitment schemes}\label{subsec:PCS}
+We define polynomial commitment schemes similarly to \cite{plonk,shplonk}.
+However, we make two modifications that enable capturing the scheme of this paper
+ \begin{itemize}
+  \item We allow the commit phase to take a \emph{vector} of polynomials as input rather than just one.
+Although less general, for notational simplicity we allow the set of opening points to depend only on the vector in which the polynomial was committed in.
+  \item We allow the scheme to be parameterized by a subset $\openset\subset \F$ such that the opening procedure is only required to succeed on points from $\openset$.
+ \end{itemize}
+\begin{dfn}\label{dfn:PCscheme}
+Fix a finite subset of positive integers $T$ and subset $\openset\subset \F$.
+A $(T,\openset)$-polynomial commitment scheme is a 3-tuple $\PCscheme = (\gen,\com,\open)$ such that
+\begin{itemize}
+ \item $\gen(d)$ -  is a randomized algorithm that given positive integer $d$ outputs a structured reference string (SRS) \srs0.
+ \item $\com(t,\f,\srs0)$ - is an algorithm that given $t\in T$, a vector of polynomials $\f \in \polyvecs{d}{t}$  and an output \srs0 of $\gen(d)$,  returns a commitment \cm to \f.
+ \item \open is a public coin protocol between parties \prvpc and \verpc. \prvpc is given $ \ff \in \left(\polysofdeg{d}\right)^{(2)}$.  \prvpc and \verpc are both given
+
+ \begin{enumerate}
+  \item  Positive integer $d$ and  $\srs0=\gen(d)$,
+  \item  Positive integer $r$ and $\cmm\in \G1^r$ - the alleged commitments to the $\set{\f_i}$,
+  \item Vector $\t \in T^r$ - the alleged lengths of the \set{\f_i}.
+  \item $\ZZ\in \opensetrects$.
+  \item $\SSS\in \cubes$ - the alleged values $\ff(\ZZ)$.
+ \end{enumerate}
+ 
+ At the end of the protocol \verpc outputs \acc or \rej;
+such that
+\begin{itemize}
+ \item \textbf{Completeness:} Fix any  $\t,\ff$ with $\f_i\in \polyvecs{d}{t_i}$,$\ZZ\in \rects,\SSS\in\cubes$ such that  
+\[\ff(\ZZ)=\SS.\]
+Then if \prvpc and \verpc follow the protocol with these inputs, \verpc outputs \acc with probability $1-\negl$.
+ \item \textbf{Knowledge soundness in the algebraic group model:} There exists an efficient \ext such that for any algebraic adversary \adv and any choice of $d=\poly$ the probability of \adv winning the following game is \negl over the randomness of \adv, \verpc and \gen.
+ \begin{enumerate}
+  \item Given $d$ and $\srs0=\gen(d)$, \adv outputs $\t\in T^r, \cmm\in  \G1^r$.
+  \item \ext, given access to the messages of \adv during the previous step, outputs $\ff$ with $\f_i \in \polysofdeg{d}^{t_i}$.
+  \item \adv outputs $\ZZ\in \opensetrects,\SSS\in \cubes$.
+  \item \adv takes the part of \prvpc in the protocol \open with the inputs
+  $\cmm,\ZZ,\SSS$.
+  \item $\adv$ wins if
+  \begin{itemize}
+   \item \verpc outputs \acc at the end of the protocol.
+   \item $f(\ZZ)\neq\SSS$.
+  \end{itemize}
+
+ \end{enumerate}
+
+\end{itemize}
+\end{itemize}
+\textit{Notation:} We usually omit $d,\srs0$ and $r$, and write $\open(\t,\cmm,\ZZ,\SSS;\ff)$.
+\end{dfn}
+
+\subsection{\shplonk}
+From \cite{shplonk} we cite the following commitment scheme (that for historical reasons has become known as \shplonk). The commitment procedure is identical to \cite{kate}. Its crucial advantage is that the verifier group operations do not grow with the number of evaluation points .
+\begin{lemma}\label{lem:shplonk}
+There is a $\set{1,\F}$-PCS $\PCschemeshplonk=(\genshplonk,\comshplonk,\openshplonk)$ such that
+  \begin{enumerate}
+  \item $\genshplonk(d)$ is of the form: Choose uniform $x\in \F$. Output $\srs0 =(\enc1{1},\enc1{x},\ldots,\enc1{x^{d-1}},\enc2{1},\enc2{x})$.
+  \item For integer $n\leq d$ and $f\in \polysofdeg{n}$, computing $\comshplonk(1,f,\srs0)$ requires $n$ \G1-exponentiations.
+   \item Fix $\f,\ZZ,\SS$. Let $n\defeq \max_{i} \left[\deg(f_{i})\right]$. Let $k\defeq |\f|$.
+   Then $\openshplonk\left(1^k,\cmm,\ZZ,\SS;\f\right)$ requires
+
+    \begin{enumerate}
+    \item 2 \G1 elements sent from \prvpc to \verpc.
+    \item at most $2n+1$ \G1-exponentiations of \prvpc.
+    \item $k+3$ \G1-exponentiations and 2 pairings of \verpc.
+%     \item Moreover, if the first polynomial is opened at all points, i.e. $\Z_0= \bigcup_i \Z_i$, then the verifier requires $k+2$ instead of $k+3$ \G1 exponentations.
+\end{enumerate}
+\end{enumerate}
+\end{lemma}
+% \begin{proof}
+%  This is Lemma 4.1 from \cite{shplonk} - except the ``Moreover'' part. That is derived from observing that one of the scalars in the \openshplonk procedure there is one in the case $S_1=T$.
+% \end{proof}
+
+\begin{remark}\label{rem:haloinfinite}
+\cite{haloinfinite} generalize the above result regarding opening efficiency from \cite{kate} to any PCS with a linearly homomorphic commitment scheme.
+Combining their generalization with the reduction of the next section could improve verifier efficiency in the \open procedures of such schemes.
+ 
+\end{remark}
+
+\section{The new commitment scheme}\label{sec:newPCS}
+We define a few final operations and notations needed for presenting the scheme.
+\subsection{FFT-like operations on vectors and polynomials}\label{sec:newPCS}
+For a vector $v\in \F^t$ and a point $x\in \F$, we denote $\eval{v}{x}\defeq \sumi{t} v_ix^i$.
+
+For vectors $v,S \in \vecs$ we denote $\eval{v}{S}\defeq \vecc{\eval{v}{x}}{x\in S}$
+
+We define operators \combine{}{} and \decompose{}{} to group together and decompose polynomials ``FFT style'':
+\begin{itemize}
+ \item 
+$\combine{t}{\f}:\polys^t\to \polys$ - given $\f\in \polys^t$ return
+\[g(X)\defeq \sumi{t} f_i(X^t)\cdot X^i\]
+note that when $\f\in \polysofdeg{d}^t$ we have $\combine{t}{\f}\in \polysofdeg{d\cdot t}$.
+\item
+$\decompose{t}{g}:\polys\to \polys^t$ - given $g\in \polys$ return 
+the unique $\f\in \polys^t$ such that 
+\[g(X)\defeq \sumi{t} f_i(X^t)\cdot X^i\]
+
+
+\end{itemize}
+
+
+Note that these are injective and inverse operations. That is, for any $\f\in\polys^t$, $\decompose{t}{\combine{t}{\f}}=\f$.
+
+\prg{Notation regarding roots:}
+We denote $p\defeq |\F|$. For positive integer $t|(p-1)$, let $\omega_t\in \F$ be a fixed primitive $t$'th root of 
+unity, i.e. $\omega_t^t=1$ and $\omega_t^i\neq 1$ for $i<t$.
+For a $t$'th power $x\in \F$, fix $z\in \F$ such that $z^t=x$ and $z^i\neq x$ for $i<t$ in a standard way; e.g. take such $z$ that has the smallest integer representative in \lt{p-1}. Now, define the vector 
+$\roots{t}{x}\defeq \vecc{z\omega_t^i}{i<t}$
+
+
+The following simple lemma is the basis of our scheme.
+
+\begin{lemma}\label{lem:fftidentity}
+Fix any $x\in \F, \S \in \F^t$ and $\f\in \polys^t$.
+Define $\Z\defeq \roots{t}{x},g \defeq \combine{t}{\f}$ and $\S' \defeq \eval{\S}{\Z}$.
+
+Then $\f(x)=\S$ if and only if $g(\Z)=\S'$
+ 
+\end{lemma}
+\begin{proof}
+ For $z\in \Z$, we have
+ \[g(z)=\sumi{t} f_i(z^t)z^i = \sumi{t}f_i(x)z^i = \eval{\f(x)}{z}.\]
+ So $g(\Z) = \eval{\f(x)}{\Z}$.
+ Since distinct polynomials of degree less than $t$ cannot agree on $t$ points, 
+ we have that
+ $\f(x)=\S$ if and only if $g(\Z)=\S'$.
+\end{proof}
+\subsection{The new scheme}\label{subsec:newPCS}
+
+Choose a positive constant $A$ dividing $p-1$. Let $T\defeq \set{0< t\leq A|\; t|A}$. 
+Let $\openset$ be the set of $A$'th powers in \F.
+We present the following $(T,\openset)$-polynomial commitment scheme.
+\begin{enumerate}
+ \item $\gen(d)$ - choose uniform $x\in \F$. Output $\srs0 =(\enc1{1},\enc1{x},\ldots,\enc1{x^{A\cdot (d-1)}},\enc2{1},\enc2{x})$.
+ \item   $\com(t,\f,\srs0)$ -  for $t\in T$ and $\f\in \polyvecs{d}{t}$. Let $g\defeq \combine{t}{\f}$. Output $\com(t,\f,\srs0) \defeq \enc1{g(x)}$.
+ 
+ \item \open:
+ We first describe the \open protocol for the simplest case of one commitment and one evaluation point.
+ 
+ $\open\left(t,\cm,x,\S;\f\right)$:
+ \begin{enumerate}
+  \item \prvpc computes $g\defeq \combine{t}{\f}$. (In practice \prvpc has this computed already from the commitment phase.)
+  \item \prvpc and \verpc compute $\Z' \defeq \roots{t}{x}$ and $\S'\defeq \S(\Z')$.
+  \item \prvpc and \verpc engage in $\openshplonk(1,\cm,\Z',\S';g)$
+%   \footnote{Recall the first parameter of \open is the number of polynomials \cm commits to, which is somewhat redundant for \openshplonk where it is always one.}
+and \verpc outputs \acc if and only if she does so in the execution of \openshplonk.    
+  \end{enumerate}
+  
+The general case is basically applying the same logic to each evaluation point and commitment. \\
+ $\open\left(\t,\cmm,\ZZ,\SSS;\f\right)$:
+ \begin{enumerate}
+  \item For $i<r$ \prvpc computes $g_i\defeq \combine{t_i}{\f_i}$. Let $\g\defeq \vecc{g_i}{i<r}$
+  \item \prvpc and \verpc compute $\ZZ'$ where $\Z'_i = \bigcup_{x\in \Z_i}{\roots{t_i}{x}} $, and  $\SS'$ where $\S'_{i}\defeq \bigcup_{j<|\SS_i|} \S_{i,j}(\roots{t_i}{Z_{i,j}})$.
+  \item \prvpc and \verpc engage in $\openshplonk(1^r,\cmm,\ZZ',\SS';\g)$ and \verpc outputs \acc if and only if she does so in the execution of \openshplonk.    
+  \end{enumerate}
+  
+
+ \end{enumerate}
+
+ \prg{Knowledge soundness:}
+ We look first at the simple case of one commitment and evaluation point.
+In this case \adv outputs an integer $t$, a \G1-element \cm, and coefficients \set{a_i} such that
+$\cm=\enc1{\sumi{A(d-1)} a_i x^i}$.
+ Let $g\defeq \sumi{A(d-1)} a_i X^i$.  
+ We define the extractor \ext to output
+ $\f = \decompose{t}{g}$.
+ An important point is that the extractor \extshplonk used in \cite{shplonk} for the knowledge soundness game 
+ of \openshplonk outputs $g$ when given $1,\cm,\set{a_i}$ by an adversary.
+ We must show that \adv wins the knowledge soundness game with probability \negl.
+%  In this case, the game would now proceed by \adv outputting
+%  $x\in \F, \S\in \F^t$.
+%  And then engaging with \verpc in $\open(t,\cm,x,\S)$.
+%  \adv wins if 
+%  \begin{itemize}
+%   \item \verpc outputs \acc
+%   \item $\f(x)\neq \S$.
+%  \end{itemize}
+% 
+ We will reduce to the knowledge soundness of \openshplonk:
+ We construct an adversary \advprime for \openshplonk that works as follows.
+ \begin{enumerate}
+ \item \advprime starts running the adversary \adv for the knowledge soundness game of \open. She simulates the roles of 
+ \verpc and \ext according to their correct behavior.
+  \item 
+When \adv outputs $t$, a \G1 element \cm, and coefficients \set{a_i}
+such that $\cm=\enc1{\sumi{A(d-1)} a_i x^i}$.
+\advprime outputs $1$ and the same element \cm and coefficients \set{a_i}.
+\item 
+Note that the extractor \extshplonk from Lemma \ref{lem:shplonk} for the knowledge soundness game 
+ of \openshplonk would output $g$ at this point; and that the extractor \ext we defined for the knowledge soundness game of \open outputs $\f=\decompose{t}{g}$ at this point of the game with \adv.
+\item
+ If \adv now outputs $x,\S$, \advprime outputs $\Z',\S'$ where $\Z'\defeq \roots{t}{x}$ and $\S'\defeq S(Z')$.
+ \item Now we must define how \advprime behaves in $\openshplonk(1,\cm,\Z',\S')$. She will behave exactly as \adv does in the call to \openshplonk which is part of the \open procedure - note that this is well defined as at this point \verpc will use the same inputs $1,\cm,\Z',\S'$ for the \openshplonk subprocedure.
+ \end{enumerate}
+We claim that the success probability of \advprime and \adv to win their respective knowledge soundness games is the same:
+By definition of the knowledge soundness game of \openshplonk, \advprime wins if and only if 
+\begin{enumerate}
+ \item \vershplonk outputs \acc 
+ \item $g(\S')\neq \Z'$. 
+\end{enumerate}
+By definition of \verpc and Lemma \ref{lem:fftidentity} this is equivalent to 
+\begin{enumerate}
+ \item \verpc outputs \acc
+ \item $\f(x)\neq \Z$, for the output \f of \ext.
+\end{enumerate}
+Hence knowledge soundness follows from the knowledge soundness of \openshplonk.
+
+The general case of multiple commitments and evaluation points is totally analogus.
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ In summary, we get
+\begin{thm}\label{thm:newPCS}
+ Fix positive integer $A$ dividing $p-1$. Let $T$ be the set of divisors of $A$; i.e. $T\defeq \set{t| t\leq A,t|A}$.
+ Let \openset be the set of $A$'th powers in \F, i.e. $\openset \defeq \set{x\in \F| \exists z\in \F \;s.t.\; z^t=x}$.
+ 
+Then there is a $(T,\openset)$-PCS $\PCscheme=(\gen,\com,\open)$ over \F  such that
+  \begin{enumerate}
+  \item $\gen(d)$ is of the form: Choose uniform $x\in \F$. Output $\srs0 =(\enc1{1},\enc1{x},\ldots,\enc1{x^{A\cdot d}},\enc2{1},\enc2{x})$.
+  \item Let $\f\in \polyvecs{d}{t}$ for $t\in T$. Suppose $n=\max_{i\in\lt{t}} [t\cdot \deg(f_i)+i] $. Then computing $\com(1,f,\srs0)$ requires $n+1$ \G1-exponentiations.
+   \item Fix $\t, \ff,\ZZ,\SSS$. Suppose $n_i=\max_{j\in\lt{t_i}} \left[t\cdot \deg(f_{i,j})+i\right] $. Let $n\defeq \max_{i} \left[n_i\right]$.
+   Let $k\defeq \sumi{r}t_i$.
+   Then $\open\left(\t,\cmm,\ZZ,\SSS;\ff\right)$ requires
+
+    \begin{enumerate}
+    \item 2 \G1 elements sent from \prvpc to \verpc.
+    \item at most $2n+1$ \G1-exponentiations of \prvpc.
+    \item $k+3$ \G1-exponentiations and 2 pairings of \verpc.
+\end{enumerate}
+\end{enumerate}
+
+\end{thm}
+ 
+
+
+\section{Polynomial Protocols}
+At this point we move on to apply the new commitment scheme to the \plonk proving system. We need to slightly alter some components from \cite{plonk} for this purpose.
+We warn that the following sections are hard to follow without an understanding of \cite{plonk}.
+    
+We begin by modifying the definition of polynomial protocols from \cite{plonk}.
+The changes are:
+\begin{itemize}
+ \item We enable compiling protocols using a PCS where the opening set is limited by requiring the \set{v_{i,j}} below do not map out of the set.
+\item We explicitly track the number of rounds of the protocol,
+as with the PCS of this paper this ends up being a crucial parameter for verifier efficiency. 
+\item We don't assume the verifier only checks \textit{one} polynomial identity, and this makes the notation a little more cumbersome. The reason we could assume this from a certain point in \cite{plonk} is that the compilation from ranged protocols always produced one identity. But using that compilation will hurt verifier efficiency here.
+\end{itemize}
+\begin{dfn}\label{dfn:polyprotocol}
+Fix positive integers $d,D,r$, a subset $T$ of positive integers, a vector $\t\in T^r$, and a subset $\openset\subset \F$.
+A \emph{$(d,D,r,T,\t,\openset)$-polynomial protocol} over \F is an $r$-round protocol between a prover \prvpoly, 
+a verifier \verpoly and ideal party \ideal that proceeds as follows.
+
+\begin{enumerate}
+\item The protocol definition includes a set of \emph{preprocessed polynomials} $\f_0 = (f_{0,1},\ldots,f_{0,t_0}) \in \polyvecs{d}{t_0}$.
+\item Each of the $r$ rounds of interaction has the following form:
+\begin{itemize}
+
+\item At round $i$, \prvpoly sends to \ideal a message $\f_i\in \polyvecs{d}{t_i}$.  If \prvpoly sends a message not of this form, the protocol is aborted.
+\item The verifier responds with public random coins. 
+\end{itemize}
+ 
+
+ \item Let $\ff\defeq \vecc{\f_i}{i<r}$ consist of the set of preprocessed polynomials together with the polynomials sent by \prvpoly. At the end of the protocol, 
+ %suppose $g_1,\ldots,g_k$ are the polynomials that were sent from \prvpoly to \ideal together with the preprocessed polynomials $\f_0$. 
+ \verpoly may ask \ideal if certain polynomial identities holds between the polynomials in \ff.
+More specifically,  each identity is of the form
+ \[F_i(X)\defeq G_i(X, h_{i,1}(v_{i,1}(X)),\ldots,h_{i,M}(v_{i,M}(X)))\equiv 0,\]
+ where 
+ \begin{enumerate}
+  \item the $h_{i,j}$ are elements of \set{f_{i,j}}
+  \item The \set{v_{i,j}} are polynomials with the property that whenever $x\in \openset$, we also have  $v_{i,j}(x)\in \openset$.
+ \item $F_i\in \polysofdeg{D}$ for every choice of $\ff$ made by \prvpoly when following the protocol correctly.
+ \end{enumerate}
+ 
+ 
+ 
+ \item After receiving the answers from \ideal regarding the identities, \verpoly outputs \acc if all identities hold, and outputs \rej otherwise.
+
+\end{enumerate}
+ 
+\end{dfn}
+
+
+
+As in \cite{plonk}, we define polynomial protocols for relations in the natural way.
+\begin{dfn}\label{dfn:protforrel}
+Given a relation \rel, a \emph{polynomial protocol for \rel} is a polynomial protocol with the following additional properties.
+\begin{enumerate}
+ \item At the beginning of the protocol, \prvpoly and \verpoly are both additionally given an input \inp. The description of \prvpoly assumes possession of \wit such that $(\inp,\wit)\in \rel$.
+ \item \textbf{Completeness:} If \prvpoly follows the protocol correctly using a witness \wit for \inp, \verpoly accepts with probability one.
+ \item \textbf{Knowledge Soundness:} There exists an efficient \ext, that given access to the messages of \prvpoly to \ideal outputs \wit such that, for any strategy of \prvpoly, the probability of the following event is \negl.
+ \begin{enumerate}
+  \item \verpoly outputs \acc at the end of the protocol, and
+  \item $(\inp,\wit)\notin \rel$.
+ \end{enumerate}
+
+\end{enumerate}
+\end{dfn}
+
+\begin{remark}
+ At this point in \cite{plonk} we defined a further abstraction of polynomial protocols on ranges and showed a reduction from them to polynomial protocols. We do not do this here, as this reduction from \cite{plonk} adds a round to the protocol, which, as already mentioned above, hurts verifier efficiency which is the focus of this paper.
+\end{remark}
+\subsection{From polynomial protocols to protocols against algebraic adversaries}\label{subsec:ideal-AGM}
+We wish to use the polynomial commitment scheme of Section \ref{sec:newPCS} to compile a polynomial protocol into one with knowledge soundness in the algebraic group model.
+
+
+For the purpose of capturing the efficiency of the transformation, we first define somewhat technical measures of a \polprot{d}{D}{r}{T}{\t}{\openset} \prot.
+
+
+
+
+
+Let $M^{**}$ be the number of distinct polynomials $\set{h_{i,j}(v_{i,j}(X))}$ appearing in the protocol in the idenitites 
+$G_i(X, h_{i,1}(v_{i,1}(X)),\ldots,h_{i,M}(v_{i,M}(X)))\equiv 0$
+checked by \verpoly in \prot.
+Let $M^*= M^{**}-K$,
+where $K$ is the number of identities such that $G_i$ is linear in $X_M$.
+For $i\in [r]$, suppose $n_i=\max_{j\in\lt{t_i}} \left[t_i\cdot \deg(f_{i,j})+i\right] $, where the maximum is over $\f_i$ sent by the honest prover in round $i$. 
+
+Let $n(\prot)\defeq \max_{i} \left[n_i\right]$.
+Finally, define $\proverexp(\prot) \defeq \sumi{r}n_i + 2n(\prot)+r$.
+
+ \begin{lemma}\label{lem:ideal-to-AGM}
+ Let \prot be a \polprot{d}{D}{r}{T}{\t}{\openset} over \F for a relation \rel, where 
+ \begin{itemize}
+  \item 
+$T=\set{t\leq A|\; t|A}$ for a constant $A$ dividing $p-1$. 
+\item \openset is the set of $A$'th powers in \F.
+ \end{itemize}
+ Then we can construct a protocol \protprime for \rel with knowledge soundness in the Algebraic Group Model under $2n(\prot)$-DLOG such that
+ \begin{enumerate}
+  \item The prover \prv in \protprime requires $\proverexp(\prot)$ \G1-exponentiations.
+  \item The total prover communication consists of $r+2$ \G1 elements and $M^*$ \F-elements. 
+\item The verifier \ver requires $r+4$ \G1-exponentiations, two pairings, one evaluation of each $G_i$ checked in \prot, and one evaluation of each $v_{i,j}$.
+  \end{enumerate}
+
+\end{lemma}
+\begin{proof}
+Let $\PCscheme=(\gen,\com,\open)$ be the $(T,\openset)$-polynomial commitment scheme described in Theorem \ref{thm:newPCS}.
+Let $\g \defeq (g_1,\ldots,g_\ell)$. The SRS of \protprime includes $\srs0=\gen(d)$,
+with the addition of $\com(\g)$.
+
+Given \prot we describe \protprime.
+\prv and \ver behave identically to \prvpoly and \verpoly,
+except the following changes
+\begin{itemize}
+\item As preprocessing, we compute the commitment $\com(t_0,\f_0)$ to the preprocessed polynomials and give this in advance to \ver.
+ \item If in round $i$ of \prot, \prvpoly sends the vector of polynomials $\f_i\in \polyvecs{d}{t_i}$ to \ideal, in \protprime \prv sends $\cm_i = \com(t_i,\f_i)$ to  \ver.
+\item When \verpoly asks in \prot about the $k$ identities 
+  \[F_i(X)\defeq G_i(X, h_{i,1}(v_{i,1}(X)),\ldots,h_{i,M}(v_{i,M}(X)))\equiv 0,\]
+  \begin{enumerate}
+ \item Let $v^*_1,\ldots,v^*_{t^*}$ be the distinct polynomials amongst $\set{v_{i,j}}$ among the different identities.
+ \item \ver chooses random $x\in\openset $, computes $v^*_1(x),\ldots,v^*_{t^*}(x)$, and sends $x$ to \prv. 
+ \item \prv generally replies with \sett{s_{i,j}}{i\in [k], j\in [M]}, which are the alleged values \set{h_{i,j}(v_{i,j}(x)}. Note though that when $G_i$ is linear in $X_M$, there is no need to send the value $s_{i,M}$ as the unique value that will cause the equation to be satisfied can be computed by \verpoly herself.
+
+\item\label{step:open} \ver engages in the protocol \open with \prv to verify the correctness of \set{s_{i,j}}
+\item \ver outputs \acc if and only if for each $i\in [k]$ 
+  \[G_i(x,s_{i,1},\ldots,s_{i,M})= 0.\]
+
+  \end{enumerate}
+
+
+\end{itemize}
+
+The efficiency claims about \protprime follow directly from Theorem \ref{thm:newPCS}.
+
+
+To prove the claim about knowledge soundness in the AGM we must describe the extractor \ext for the protocol \protprime.
+For this purpose, let \extprot be the extractor of the protocol \prot as guaranteed to exist from Definition \ref{dfn:protforrel}, and \extpc be the extractor for the Knowledge Soundness game of \PCscheme as in Definition \ref{dfn:PCscheme}.
+
+
+Now assume an algebraic adversary \adv is taking the role of \prv in \protprime.
+\begin{enumerate}
+ \item \ext sends the commitments $\cmm$  to \extpc and receives in return $\ff \in \left(\polysofdeg{d}\right)^{(2)}$.
+ \item \ext plays the role of \ideal in interaction with \extprot, sending him the polynomials \ff.
+ \item When \extprot outputs \wit, \ext also outputs \wit.
+\end{enumerate}
+
+Now let us define two events (over the randomness of \ver,\adv and \gen):
+\begin{enumerate}
+ \item We think of an adversary \advprot participating in \prot, and using the polynomials \ff as their messages to \ideal. We define $A$ to be the event that one of the identities $F_i$ held, but $(\inp,\wit)\notin \rel$. By the KS of \prot, $\prob(A)=\negl$.
+ \item We let $B$ be the event that for some $i\in [k],j\in [M], h_{i,j}(v_{i,j}(x))\neq s_{i,j}$, and at the same time \verpc has output \acc when \open was run as a subroutine in Step \ref{step:open}. By the KS of \PCscheme, $\prob(B)=\negl$.
+\end{enumerate}
+
+Now look at the event $C$ that \ver outputs \acc, but \ext failed in the sense that $(\inp,\wit)\notin \rel$.
+We split $C$ into two events.
+\begin{enumerate}
+ \item $A$ or $B$ also happened - this has \negl probability.
+ \item $C$ happened but not $A$ or $B$. This means that for some $i\in [k]$, $F_i$ is not the zero polynomial, but $F_i(x)=0$; which happens w.p. $\deg(F_i)\cdot A/p$ which is \negl.
+\end{enumerate}
+
+
+
+\end{proof}
+
+
+
+
+\section{Polynomial protocol for constraint system satisfiability}
+As in Section 6 and 7 of \cite{plonk}, we work with a constraint system $\constsystem=(\vars,\selectors)$ 
+where $\selectors = (\selleft,\selright,\selout,\selmult,\selconst)\in (\F^n)^5$ are our ``Selector vectors'';
+and \vars implicitly describe a permutation on $[3n]$.
+
+We present a slightly modified polynomial protocol for the relation 
+\relof{\constsystem} described in \cite{plonk}; which is the set of pairs $(\inp,\wit)$ with $\inp\in \F^\ell,\wit\in \F^{m-\ell}$ such 
+that $\assignment\defeq (\inp,\wit)$ satisfies \constsystem. 
+The difference from \cite{plonk} is that we do not wish to use their reduction from ranged polynomial protocols to polynomial protocols, as
+this adds a round of interaction, which ends up adding a verifier scalar multiplication in the compiled protocol against algebraic adversaries.
+Instead, we need to explicitly describe sending the quotient polynomial involved in each of three identities checked.
+We assume below $n$ is a power of two dividing $p-1$, and $H\subset \F$ is a multiplicative subgroup of \F of order $n$ with generator $\hgen$.
+
+\prg{Preprocessed polynomials:}
+
+
+The polynomials $\sigpoly_1,\sigpoly_2,\sigpoly_3$ describing the permutation derived from \constsystem as in Section 8 of \cite{plonk}.
+(As explained there, the polynomials describing the identity permutation can be computed in $\log n$ time directly by the verifier.)
+The polynomials $\selleft,\selright,\selout,\selmult,\selconst\in \polysofdeg{n}$ (as in \cite{plonk}, we identify the vectors with polynomials obtaining the vector values on $H$).
+
+
+\prg{Protocol:}
+\begin{enumerate}
+ \item Let $\assignment\in \F^m$ be \prvpoly's assignment consistent with the public input \inp.
+ \prvpoly computes the three polynomials $f_L,f_R,f_O\in \polysofdeg{n}$, where for $i\in [n]$
+\[f_L(i)= \assignment_{\lvar_i},f_R(i)= \assignment_{\rvar_i},f_O(i)= \assignment_{\ovar_i}.\]
+\item \prvpoly and \verpoly compute the ``Public input polynomial'' 
+\[\pubinppoly(X) \defeq \sum_{i\in [\ell]} -\inp_i \cdot L_i(X). \]
+\item 
+\prvpoly computes the quotient polynomial $T_0(X)$ showing $f_L,f_R,f_O$ satisfy the arithmetic constraint; i.e.
+\[T_0(X)\defeq\]
+\[\frac{\selleft(X) \cdot f_L(X) + \selright(X) \cdot f_R(X) + \selout(X) \cdot f_O(X)+ \selmult(X)\cdot f_L(X)\cdot f_R(X)+ (\selconst(X)+\PI(X))}{Z_H(X)}\]
+\prvpoly sends $\f_1=(f_L,f_R,f_O,T_0)$ to \ideal.
+\item \prvpoly and \verpoly run an extended permutation check protocol as in \cite{plonk}, using the permutation $\sigma$ between $(f_L,f_R,f_O)$ and itself. As explained in Section $5$ of \cite{plonk}, this exactly checks whether $(f_L,f_R,f_O)$ copy-satisfies \partof{\constsystem}.
+More precisely,
+\begin{enumerate}
+ \item\label{item:betgamma} \verpoly chooses random $\beta,\gamma \in\F$ and sends them to \prvpoly.
+ \item Let $f_j'\defeq f_j+\beta\cdot  \idpoly_j +\gamma$, and $ g'_j\defeq g_j+\beta\cdot \sigpoly_j + \gamma$.
+That is, for $j\in \set{L,R,O},i\in [n]$
+ \[f'_j(\hgen^i) = f_j(\hgen^i) + \beta((j-1)\cdot n + i) + \gamma,
+ g'_j(\hgen^i) = g_j(\hgen^i) + \beta\cdot \sigma((j-1)\cdot n + i) + \gamma\]
+\item Define $f',g' \in \polysofdeg{3n}$ by 
+\[f'(X) \defeq \prod_{j\in \set{L,R,O}} f'_j(X),g'(X) \defeq \prod_{j\in \set{L,R,O}} g'_j(X).\]
+ 
+ \item \prvpoly computes $Z \in \polysofdeg{n}$, such that 
+ $Z(\hgen) =1$; and for $i\in \set{2,\ldots,n}$
+ \[Z(\hgen^i)  = \prod_{1\leq \ell <i} f'(\hgen^j)/g'(\hgen^j).\]
+ (The case of one of the products being undefined is handled as in the previous protocol.)
+ 
+\item \prvpoly computes the quotients $T_1,T_2$ showing that $Z$ ``starts from one'' and that $Z$ accumulates the values of $f/g$. Namely,
+\[T_1(X)\defeq (L_1(X) (Z(X)-1))/Z_H(X) =0\]
+\[T_2(X)\defeq (Z(X)f'(X) - g'(X)Z(X\cdot \hgen))/Z_H(X)\]
+
+ \item \prvpoly sends $\f_1=(Z,T_1,T_2)$ to \ideal.
+ \item \verpoly checks the following three identities
+ \begin{enumerate}
+\item \[\selleft(X) \cdot f_L(X) + \selright(X) \cdot f_R(X) + \selout(X) \cdot f_O(X) + \selmult(X)\cdot f_L(X)\cdot f_R(X)+ (\selconst(X)+\PI(X))\]
+\[= T_0(X)\cdot Z_H(X)\]
+\item \[L_1(X) (Z(X)-1)=T_1(X)Z_H(X)\]
+\item \[Z(X)f'(X) - g'(X)Z(X\cdot \hgen)=T_2(X)Z_H(X)\]
+ \end{enumerate}
+ and outputs \acc iff all checks hold.
+\end{enumerate}
+\end{enumerate}
+Using the analysis of \cite{plonk} we get 
+\begin{thm}\label{thm:mainpolyprotocol}
+
+   The above is a polynomial protocol for the relation \relof{\constsystem}.\end{thm}
+ Now using Lemma \ref{lem:ideal-to-AGM} we get 
+\begin{corollary}\label{cor:final}
+  Assume the $Q$-DLOG for $Q=18\cdot n$. Assume $24|(p-1)$. Then there is a protocol for the relation \relof{\constsystem} with Knowledge Soundness in the Algebraic Group Model such that
+   \begin{enumerate}
+  \item The prover \prv requires $35n$ \G1-exponentiations.
+  \item The total prover communication consists of $4$ \G1-elements and $15$ \F-elements.
+  \item The verifier requires $6$ \G1-exponentiations and two pairings.
+ \end{enumerate}
+ \end{corollary}
+\begin{proof}
+ We need to simply compute the parameters we are plugging into Lemma \ref{lem:ideal-to-AGM} when using the above protocol \prot.
+ The number of rounds $r$ is two.
+ We have
+ \begin{itemize}
+  \item 
+
+ $n_0=\max_{j<8} \left[8\cdot (n-1)+j\right] <8n$
+\item  $n_1=\max \set{4\cdot \deg(f_L),4\cdot \deg(f_R)+1,4\cdot \deg(f_O)+2,4\cdot \deg(T_0)+2} <8n$
+\item $n_2 = \max \set{3\cdot \deg(Z),3\cdot \deg(T_1)+1, 3\cdot \deg(T_2)+2} <9n$
+\item $n(\prot) = \max\set{n_0,n_1,n_2}<9n$
+ \end{itemize}
+ Now, from Lemma \ref{lem:ideal-to-AGM} we know that 
+ \begin{enumerate}
+  \item The prover requires $\proverexp(\prot)=n_1+n_2+2n(\prot)+r\leq 35n$ \G1-exponentiations.
+  \item The total prover communication consists of $r+2=4$ \G1 elements and $M^*=15$ \F-elements.(Opening $\selleft,\selright,\selout,\selmult,\selconst,\sigpoly_1,\sigpoly_2,\sigpoly_3,f_L,f_R,f_O,Z$ at $x$ and $Z,T_1,T_2$ at $\hgen x$.) 
+\item The verifier \ver requires $r+4=6$ \G1-exponentiations.
+ \end{enumerate}
+
+ 
+% where $K$ is the number of identities such that $G_i$ is linear in $X_M$.
+% For $i\in [r]$, suppose $n_i=\max_{j\in\lt{t_i}} \left[t_i\cdot \deg(f_{i,j})+i\right] $, where the maximum is over $\f_i$ sent by the honest prover in round $i$. 
+% 
+% Let $n(\prot)\defeq \max_{i} \left[n_i\right]$.
+% Finally, define $\proverexp(\prot) \defeq \sum_{i=1}{r}n_i + 2n(\prot)+1$.
+%  $n_0=
+%  The parameter $n(\prot)$ is $9$.
+%  Since
+\end{proof}
+
+% \item \verpoly computes the ``Public input polynomial'' 
+% \[\pubinppoly(X) \defeq \sum_{i\in [\ell]} -\inp_i \cdot L_i(X) \]
+% \item \verpoly now checks the identity 
+% \[\selleft \cdot f_L + \selright \cdot f_R + \selout \cdot f_O + \selmult\cdot f_L\cdot f_R+ (\selconst+\PI) =0,\]
+% on \dom.
+% 
+% \item \prvpoly computes the polynomial 
+%  \item\label{item:betgamma} \verpoly chooses random $\beta,\gamma \in\F$ and sends to \prvpoly.
+%  \item Let $f_j'\defeq f_j+\beta\cdot  \idpoly_j +\gamma$, and $ g'_j\defeq g_j+\beta\cdot \sigpoly_j + \gamma$.
+% That is, for $j\in [k],i\in [n]$
+%  \[f'_j(\hgen^i) = f_j(\hgen^i) + \beta((j-1)\cdot n + i) + \gamma,
+%  g'_j(\hgen^i) = g_j(\hgen^i) + \beta\cdot \sigma((j-1)\cdot n + i) + \gamma\]
+% \item Define $f',g' \in \polysofdeg{kn}$ by 
+% \[f'(X) \defeq \prod_{j\in [k]} f'_j(X),g'(X) \defeq \prod_{j\in [k]} g'_j(X).\]
+%  
+%  \item \prvpoly computes $Z \in \polysofdeg{n}$, such that 
+%  $Z(\hgen) =1$; and for $i\in \set{2,\ldots,n}$
+%  \[Z(\hgen^i)  = \prod_{1\leq \ell <i} f'(\hgen^j)/g'(\hgen^j).\]
+%  (The case of one of the products being undefined is handled as in the previous protocol.)
+%  
+%  
+%  \item \prvpoly sends $Z$ to \ideal.
+%  \item \verpoly checks if for all $a\in \dom$
+%  \begin{enumerate}
+%   \item $L_1(a) (Z(a)-1) =0$.
+%   \item $Z(a)f'(a) = g'(a)Z(a\cdot \hgen)$.
+%  \end{enumerate}
+%  and outputs \acc iff all checks hold.
+% \end{enumerate}
+% \begin{lemma}\label{lem:permprotocolmany}
+% Fix any $f_1,\ldots,f_k,g_1,\ldots g_k \in \polysofdeg{d}$ and permutation $\sigma$ on $[kn]$ as inputs to the above protocol \protmany.
+% Suppose that $(g_1,\ldots,g_k) \neq \sigof{f_1,\ldots,f_k}$.
+% Then, for any strategy of \prvpoly, the probability of \verpoly outputting \acc is \negl.
+% 
+% \end{lemma}
+% \begin{proof}
+%  $(g_1,\ldots,g_k) \neq \sigof{f_1,\ldots,f_k}$ implies that with high probability over $\beta,\gamma \in \F$ the product $F$ of the values 
+%  \sett{f'_j(\hgen^i)}{j\in [k],i\in [n]} is different from the product $G$ of the values
+%  \sett{g'_j(\hgen^i)}{j\in [k],i\in [n]}.
+%  Note now that 
+%     \[F=\prod_{i\in [n]} f'(\hgen^i), G=\prod_{i\in [n]} g'(\hgen^i),\]
+%  and that the next steps of the protocol are identical to those in the previous protocol,
+%  and as analyzed there - exactly check if these products are equal.
+% \end{proof}
+% 
+% 
+
+% \section*{Acknowledgements}
+\bibliographystyle{alpha}
+\bibliography{references}
+
+    \end{document}
+
+
