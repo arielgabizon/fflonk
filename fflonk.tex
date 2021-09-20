@@ -432,7 +432,7 @@
 We present a variant of the Kate, Zaverucha and Goldberg polynomial commitment scheme \cite{kate} where $d$ polynomials can be opened at a point that is a $d$'th power, such that the amount of verifier group operations does not depend on $d$.
 Our method works by reducing opening multiple polynomials at a single point $x$, to opening a single polynomial at many points via an ``FFT-like identity''.
 
-As an application we present a version of the \plonk zk-SNARK\cite{plonk} with significantly improved verifier performance, at the cost of roughly tripling the prover time. Specifically, in addition to the two pairings, the verifier only performs six scalar muliptlications, rather than 16 or 18 as in the versions presented in \cite{plonk}.
+As an application we present a version of the \plonk zk-SNARK\cite{plonk} with significantly improved verifier performance, at the cost of roughly tripling the prover time. Specifically, in addition to the two pairings, the verifier only performs five scalar multiplications, rather than 16 or 18 as in the versions presented in \cite{plonk}.
 \end{abstract}
 
 \section{Introduction}
@@ -472,7 +472,7 @@ In the FFT setting,  we represent a polynomial $f$  by two polynomials $f_0,f_1$
 Here, we use this equation in the reverse direction - starting from $f_0,f_1$ and deriving $f$.
 Suppose $x=z^2$ is a square. $f$ will allow us to derive the desired second constraint on $a,b$. Specifically, we open $f$ at \set{z,-z}. We have
 \[b_0=f(z)=f_0(x)+z f_1(x) = a+zb\]
-\[b_1=f(-z)=f_1(x)-z f_1(x) = a-zb\]
+\[b_1=f(-z)=f_0(x)-z f_1(x) = a-zb\]
 Thus, these two openings of $f$ have given us the desired two independent constraints on $a,b$ and we can determine them.
 Using the natural extension to $t$'th roots of unity gives us the same thing for $t$ polynomials.
 \subsection{Our results:}
@@ -489,7 +489,7 @@ See Theorem \ref{thm:newPCS} for the more detailed efficiency properties in the 
 		\kate 
 		         & $n$ \G1, $2$ \G2  & $t n$ \G1, $O(t n)$ \F&   $t$ \G1 &   $2t$ \textbf{P}\\ \hline
 		Batched \kate as in \cite{sonic,marlin,plonk}     & $n$ \G1, $2$ \G2 &   $n$ \G1,$O(t n)$ \F  & $1$ \G1 & $t-1$ \G1, $2$ \textbf{P}   \\ \hline
-	This work     & $t n$ \G1, $2$ \G2 &   $2tn$ \G1, $O(t n)$ \F& 2 \G1 &  $4$ \G1, $2$ \textbf{P}   \\ \hline
+	This work     & $t n$ \G1, $2$ \G2 &   $2tn$ \G1, $O(t n)$ \F& 2 \G1 &  $3$ \G1, $2$ \textbf{P}   \\ \hline
 
 	\end{tabular}
 \end{adjustbox}
@@ -512,7 +512,7 @@ We compare the \plonk scheme when using the  \cite{kate}-based PCS in \cite{plon
 	\begin{tabular}{l|l|l|l|l}
 	 & \thead{SRS size} & \thead{prover \\ group operations} & \thead{proof\\ length} & \thead{verifier group operations} \\ \hline
 		\cite{plonk}  &  $3n$ \G1, $2$ \G2  & $11n$ \G1 & $7$ \G1, $7$ \F  &   $16$ \G1, $2$ \textbf{P} \\ \hline
-		this work     &$9n$ \G1, $2$ \G2 &  $35n$ \G1 & $4$ \G1, $15$ \F &   $6$ \G1,  $2$ \textbf{P} \\ \hline
+		this work     &$9n$ \G1, $2$ \G2 &  $35n$ \G1 & $4$ \G1, $15$ \F &   $5$ \G1,  $2$ \textbf{P} \\ \hline
 
 		\end{tabular}
 \end{adjustbox}
@@ -646,21 +646,40 @@ From \cite{shplonk} we cite the following commitment scheme (that for historical
 There is a $\set{1,\F}$-PCS $\PCschemeshplonk=(\genshplonk,\comshplonk,\openshplonk)$ such that
   \begin{enumerate}
   \item $\genshplonk(d)$ is of the form: Choose uniform $x\in \F$. Output $\srs0 =(\enc1{1},\enc1{x},\ldots,\enc1{x^{d-1}},\enc2{1},\enc2{x})$.
-  \item For integer $n\leq d$ and $f\in \polysofdeg{n}$, computing $\comshplonk(1,f,\srs0)$ requires $n$ \G1-exponentiations.
+  \item For integer $n\leq d$ and $f\in \polysofdeg{n}$, computing $\comshplonk(1,f,\srs0)$ requires $n$ \G1-scalar multiplications.
    \item Fix $\f,\ZZ,\SS$. Let $n\defeq \max_{i} \left[\deg(f_{i})\right]$. Let $k\defeq |\f|$.
    Then $\openshplonk\left(1^k,\cmm,\ZZ,\SS;\f\right)$ requires
 
     \begin{enumerate}
     \item 2 \G1 elements sent from \prvpc to \verpc.
-    \item at most $2n+1$ \G1-exponentiations of \prvpc.
-    \item $k+3$ \G1-exponentiations and 2 pairings of \verpc.
+    \item at most $2n+1$ \G1-scalar multiplications of \prvpc.
+    \item $k+2$ \G1-scalar multiplications and 2 pairings of \verpc.
 %     \item Moreover, if the first polynomial is opened at all points, i.e. $\Z_0= \bigcup_i \Z_i$, then the verifier requires $k+2$ instead of $k+3$ \G1 exponentations.
 \end{enumerate}
 \end{enumerate}
 \end{lemma}
-% \begin{proof}
-%  This is Lemma 4.1 from \cite{shplonk} - except the ``Moreover'' part. That is derived from observing that one of the scalars in the \openshplonk procedure there is one in the case $S_1=T$.
-% \end{proof}
+\begin{proof}
+ This is Lemma 4.1 from \cite{shplonk} - except that there \verpc does $k+3$ \G1-scalar multiplications.
+ However, it turns out the \open protocol from there can be ``normalized'' to save one of the scalar multiplications, by dividing in many places by the constant $Z_{T\setminus S_1}(z)$ that appears as one of the scalar multipliers.
+ We present the \cite{shplonk} \open protocol here with this minor modification.
+ To make the comparision with \cite{shplonk} easier, we momentarily use the notation from that paper - where $T$ denotes the union of opening points for all polynomials, $S_i$ denotes the opening set for the $i$'th polynomial  , $i$ ranges from one rather than zero; and $r_i$ denotes the polynomial of degree $|S_i|-1$ that coincides with $f_i$ on $S_i$. (See \cite{shplonk} for more context and details.)\\                          
+ 
+$\underline{\openshplonk(\sett{\cm_i}{i\in [k]},\sett{S_i}{i\in [k]},\sett{r_i}{i\in [k]}; \sett{f_i}{i\in [k]})}$:
+     \begin{enumerate}
+    \item \verpc sends a random challenge $\gamma\in \F$.
+    \item\label{stp:W} \prvpc sends $W\defeq \enc1{(f/Z_T)(x)}$ where
+    \[f\defeq \sum_{i\in [k]} \gamma^{i-1}\cdot  Z_{T\setminus S_i}(f_i-r_i).\]
+    \item \verpc sends a random evaluation point $z\in \F$
+    \item\label{step:W'} \prvpc sends $W'\defeq \enc1{\frac{L(x)}{Z_{T\setminus S_1}(z)(x-z)}}$ where
+    \[L\defeq \sum_{i\in [k]} \gamma^{i-1}Z_{T\setminus S_i}(z)\cdot (f_i-r_i(z)) - Z_T(z)\cdot (f/Z_T).\]
+%     \[f'(X)\defeq \sum_{i\in [k]} \gamma^{i-1}\cdot  Z_{T\setminus S_i}(z)(f_i(X)-r_i(z)) - Z_T(z)(f/Z_T)(X).\]
+%      \[F\defeq \sum_{i\in [k]} \gamma^{i-1}  Z_{T\setminus S_i}(z)\cdot (\cm_i - \enc1{r_i(z)}) - Z_T(z)W.\]
+    \item \verpc outputs \acc iff $e(F+zW',\enc2{1}) = e(W',\enc2{x})$,
+where     \[F\defeq \sum_{i\in [k]} \gamma^{i-1}  \frac{Z_{T\setminus S_i}}{Z_{T\setminus S_1}}(z)\cdot \cm_i - \enc1{\sum_{i\in [k]} \gamma^{i-1} \frac{Z_{T\setminus S_i}}{Z_{T\setminus S_1}}(z)r_i(z)} - \frac{Z_T}{Z_{T\setminus S_1}}(z)W.\]
+    \end{enumerate}
+Observe that in this form the coefficient of $\cm_1$ in the last equation is one - this is what saves a verifier scalar multiplication compared to \cite{shplonk}. At the same time, it is straightforward to carry over the knowledge soundness proof from \cite{shplonk}, as terms have simply changed by the constant $Z_{T\setminus S_1}(z)$.
+\end{proof}
+
 
 \begin{remark}\label{rem:haloinfinite}
 \cite{haloinfinite} generalize the above result regarding opening efficiency from \cite{kate} to any PCS with a linearly homomorphic commitment scheme.
