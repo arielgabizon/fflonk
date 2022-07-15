@@ -757,7 +757,7 @@ and \verpc outputs \acc if and only if she does so in the execution of \openshpl
   \end{enumerate}
   
 The general case is basically applying the same logic to each evaluation point and commitment. \\
- $\open\left(\t,\cmm,\ZZ,\SSS;\f\right)$:
+ $\open\left(\t,\cmm,\ZZ,\SSS;\ff\right)$:
  \begin{enumerate}
   \item For $i<r$, \prvpc computes $g_i\defeq \combine{t_i}{\f_i}$. Let $\g\defeq \vecc{g_i}{i<r}$
   \item \prvpc and \verpc compute $\ZZ'$ where $\Z'_i = \bigcup_{x\in \Z_i}{\roots{t_i}{x}} $, and  $\SS'$ where $\S'_{i}\defeq \bigcup_{j<|\SS_i|} \S_{i,j}(\roots{t_i}{Z_{i,j}})$.
