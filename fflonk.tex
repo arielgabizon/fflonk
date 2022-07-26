@@ -757,7 +757,7 @@ and \verpc outputs \acc if and only if she does so in the execution of \openshpl
   \end{enumerate}
   
 The general case is basically applying the same logic to each evaluation point and commitment. \\
- $\open\left(\t,\cmm,\ZZ,\SSS;\f\right)$:
+ $\open\left(\t,\cmm,\ZZ,\SSS;\ff\right)$:
  \begin{enumerate}
   \item For $i<r$, \prvpc computes $g_i\defeq \combine{t_i}{\f_i}$. Let $\g\defeq \vecc{g_i}{i<r}$
   \item \prvpc and \verpc compute $\ZZ'$ where $\Z'_i = \bigcup_{x\in \Z_i}{\roots{t_i}{x}} $, and  $\SS'$ where $\S'_{i}\defeq \bigcup_{j<|\SS_i|} \S_{i,j}(\roots{t_i}{Z_{i,j}})$.
@@ -1065,7 +1065,7 @@ That is, for $j\in \set{L,R,O},i\in [n]$
 \[T_1(X)\defeq (L_1(X) (Z(X)-1))/Z_H(X) =0\]
 \[T_2(X)\defeq (Z(X)f'(X) - g'(X)Z(X\cdot \hgen))/Z_H(X)\]
 
- \item \prvpoly sends $\f_1=(Z,T_1,T_2)$ to \ideal.
+ \item \prvpoly sends $\f_2=(Z,T_1,T_2)$ to \ideal.
  \item \verpoly checks the following three identities
  \begin{enumerate}
 \item \[\selleft(X) \cdot f_L(X) + \selright(X) \cdot f_R(X) + \selout(X) \cdot f_O(X) + \selmult(X)\cdot f_L(X)\cdot f_R(X)+ (\selconst(X)+\PI(X))\]
@@ -1086,7 +1086,7 @@ Using the analysis of \cite{plonk} we get
    \begin{enumerate}
   \item The prover \prv requires $35n$ \G1-exponentiations.
   \item The total prover communication consists of $4$ \G1-elements and $15$ \F-elements.
-  \item The verifier requires $6$ \G1-exponentiations and two pairings.
+  \item The verifier requires $5$ \G1-exponentiations and two pairings.
  \end{enumerate}
  \end{corollary}
 \begin{proof}
