@@ -1050,10 +1050,10 @@ The polynomials $\selleft,\selright,\selout,\selmult,\selconst\in \polysofdeg{n}
 More precisely,
 \begin{enumerate}
  \item\label{item:betgamma} \verpoly chooses random $\beta,\gamma \in\F$ and sends them to \prvpoly.
- \item Let $f_j'\defeq f_j+\beta\cdot  \idpoly_j +\gamma$, and $ g'_j\defeq g_j+\beta\cdot \sigpoly_j + \gamma$.
+ \item Let $f_j'\defeq f_j+\beta\cdot  \idpoly_j +\gamma$, and $ g'_j\defeq f_j+\beta\cdot \sigpoly_j + \gamma$.
 That is, for $j\in \set{L,R,O},i\in [n]$
  \[f'_j(\hgen^i) = f_j(\hgen^i) + \beta((j-1)\cdot n + i) + \gamma,
- g'_j(\hgen^i) = g_j(\hgen^i) + \beta\cdot \sigma((j-1)\cdot n + i) + \gamma\]
+ g'_j(\hgen^i) = f_j(\hgen^i) + \beta\cdot \sigma((j-1)\cdot n + i) + \gamma\]
 \item Define $f',g' \in \polysofdeg{3n}$ by 
 \[f'(X) \defeq \prod_{j\in \set{L,R,O}} f'_j(X),g'(X) \defeq \prod_{j\in \set{L,R,O}} g'_j(X).\]
  
